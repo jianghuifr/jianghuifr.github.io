@@ -290,7 +290,7 @@ img { max-width: 100%; height: auto; }
   gap: 0.4rem;
   padding: 2rem 1rem;
 }
-/* about 三行样式（首页与 /about 页共用） */
+/* about 三行样式（首页展示） */
 .about-identity {
   font-family: var(--font-serif);
   font-size: 2.4rem;
@@ -325,16 +325,6 @@ img { max-width: 100%; height: auto; }
   border-color: var(--color-accent);
   background: var(--color-surface-hover);
   transform: translateY(-1px);
-}
-/* /about 页面：整个内容区垂直居中 */
-.page-about {
-  width: 100%;
-  min-height: calc(100vh - var(--header-height) - 5rem);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
 }
 
 /* --- Post List --- */

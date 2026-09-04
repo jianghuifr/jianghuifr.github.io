@@ -1,8 +1,4 @@
-<%# 首页 = 纯个人展示页：about 内容全屏垂直居中，无标题栏 %>
-<%
-var aboutPage = null;
-site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; });
-%>
+<%# 首页 = 个人展示页：about 内容内嵌，全屏垂直居中，无 header/footer %>
 <%# 无 header 时的浮动导航（右上角） %>
 <nav class="float-nav" aria-label="站点导航">
   <% for (var name in theme.menu) { %>
@@ -11,9 +7,9 @@ site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; }
 </nav>
 <section class="home-about">
   <div class="home-about-inner">
-    <% if (aboutPage) { %>
-      <%- aboutPage.content %>
-    <% } %>
+    <div class="about-identity">jianghuifr</div>
+    <div class="about-role">Software Developer &middot; Suzhou, China</div>
+    <div class="about-note">技术笔记 &middot; 生活记录 &middot; 个人展示</div>
     <a class="about-entry" href="<%- url_for('/archives') %>">查看笔记 &rarr;</a>
   </div>
 </section>
