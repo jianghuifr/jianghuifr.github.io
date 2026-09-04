@@ -238,14 +238,17 @@ img { max-width: 100%; height: auto; }
   background: var(--color-bg);
 }
 .home-bg canvas { display: block; width: 100%; height: 100%; }
-/* 非首页：背景上加半透明蒙版，保证文字可读（不遮内容，只暗化背景） */
-body:not([data-noheader]) .home-bg::after {
+/* 非首页：背景上加半透明蒙版（opacity 渐入渐出，SPA 切换时平滑过渡） */
+.home-bg::after {
   content: '';
   position: absolute;
   inset: 0;
   background: var(--bg-mask, rgba(17, 17, 17, 0.55));
-  -webkit-backdrop-filter: none;
-  backdrop-filter: none;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+body:not([data-noheader]) .home-bg::after {
+  opacity: 1;
 }
 :root {
   --bg-mask: rgba(245, 245, 245, 0.55);
@@ -257,10 +260,6 @@ body:not([data-noheader]) .home-bg::after {
 }
 :root[data-theme="dark"] {
   --bg-mask: rgba(15, 17, 20, 0.6);
-}
-/* 首页不显示蒙版 */
-[data-noheader] .home-bg::after {
-  display: none;
 }
 /* About 文字区：无边界无底板无 blur，纯文字光晕融入背景 */
 [data-noheader] .home-about-inner {
