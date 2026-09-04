@@ -1,12 +1,20 @@
 <!DOCTYPE html>
 <html lang="<%= config.language || 'en' %>">
 <%- partial('partial/head') %>
-<body>
+<% var isHome = (page.path === 'index.html' || page.path === ''); %>
+<body<%= isHome ? ' data-noheader' : '' %>>
+  <% if (isHome) { %>
+    <div class="home-bg" id="home-bg" aria-hidden="true">
+      <div id="bg-bubbles"></div>
+    </div>
+  <% } %>
   <div class="reading-progress" aria-hidden="true">
     <div class="reading-progress-bar" id="reading-progress-bar"></div>
   </div>
   <div class="site-wrapper">
-    <%- partial('partial/header') %>
+    <% if (page.path !== 'index.html' && page.path !== '') { %>
+      <%- partial('partial/header') %>
+    <% } %>
     <main class="main-content">
       <%- body %>
     </main>
@@ -41,5 +49,15 @@
 
   <%- js('js/app') %>
   <%- js('js/code') %>
+  <% if (isHome) { %>
+    <script>
+      // 首页背景动效：Bubbles（带 lazy 加载 + 失败降级）
+      window.__MONO_BG = {
+        threeUrl: '<%- url_for('/vendor/three.module.js') %>',
+        coreUrl: '<%- url_for('/js/bubbles-core.js') %>'
+      };
+    </script>
+    <%- js('js/background') %>
+  <% } %>
 </body>
 </html>

@@ -1,8 +1,14 @@
-<%# 首页 = 纯个人展示页：about 内容全屏垂直居中 %>
+<%# 首页 = 纯个人展示页：about 内容全屏垂直居中，无标题栏 %>
 <%
 var aboutPage = null;
 site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; });
 %>
+<%# 无 header 时的浮动导航（右上角） %>
+<nav class="float-nav" aria-label="站点导航">
+  <% for (var name in theme.menu) { %>
+    <a href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
+  <% } %>
+</nav>
 <section class="home-about">
   <div class="home-about-inner">
     <% if (aboutPage) { %>
