@@ -227,6 +227,14 @@ img { max-width: 100%; height: auto; }
 [data-noheader] .about-note {
   text-shadow: 0 0 14px var(--color-bg), 0 0 3px var(--color-bg);
 }
+/* 移动端无 blur，加强光晕保证可读 */
+@media (max-width: 768px) {
+  [data-noheader] .about-identity,
+  [data-noheader] .about-role,
+  [data-noheader] .about-note {
+    text-shadow: 0 0 18px var(--color-bg), 0 0 6px var(--color-bg), 0 0 2px var(--color-bg);
+  }
+}
 [data-noheader] .about-entry {
   box-shadow: 0 0 14px var(--color-bg);
 }
@@ -668,6 +676,21 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
   body { font-size: 15px; }
   .main-content { padding: 1.4rem 1rem 2.4rem; }
   .header-inner { padding: 0 1rem; position: relative; }
+
+  /* 移动端首页：移除文字区 blur，容器拉满 100% */
+  [data-noheader] .main-content {
+    padding-left: 0;
+    padding-right: 0;
+  }
+  [data-noheader] .home-about {
+    max-width: 100%;
+  }
+  [data-noheader] .home-about-inner {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    padding: 2rem 1.4rem;
+    width: 100%;
+  }
 
   .nav-toggle { display: block; }
 
