@@ -238,54 +238,14 @@ img { max-width: 100%; height: auto; }
   background: var(--color-bg);
 }
 .home-bg canvas { display: block; width: 100%; height: 100%; }
-/* 非首页：正文内容区半透明浮层，背景动效可见但文字可读 */
-/* 非首页内容浮层底色（跟随主题：浅色亮雾 / 深色暗雾） */
-body:not([data-noheader]) .post-card,
-body:not([data-noheader]) .archive,
-body:not([data-noheader]) .tag-cloud-page,
-body:not([data-noheader]) .categories-page,
-body:not([data-noheader]) .post,
-body:not([data-noheader]) .page {
-  background: rgba(245, 245, 245, 0.6);
-  border-radius: 10px;
-  padding: 1.5rem 1.75rem;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) body:not([data-noheader]) .post-card,
-  :root:not([data-theme="light"]) body:not([data-noheader]) .archive,
-  :root:not([data-theme="light"]) body:not([data-noheader]) .tag-cloud-page,
-  :root:not([data-theme="light"]) body:not([data-noheader]) .categories-page,
-  :root:not([data-theme="light"]) body:not([data-noheader]) .post,
-  :root:not([data-theme="light"]) body:not([data-noheader]) .page {
-    background: rgba(15, 17, 20, 0.55);
-  }
-}
-:root[data-theme="dark"] body:not([data-noheader]) .post-card,
-:root[data-theme="dark"] body:not([data-noheader]) .archive,
-:root[data-theme="dark"] body:not([data-noheader]) .tag-cloud-page,
-:root[data-theme="dark"] body:not([data-noheader]) .categories-page,
-:root[data-theme="dark"] body:not([data-noheader]) .post,
-:root[data-theme="dark"] body:not([data-noheader]) .page {
-  background: rgba(15, 17, 20, 0.55);
-}
-/* 页面级容器：内容少时也撑满 header 与 footer 之间（不留无意义空白）
-   注意：.post-card 保持自然高度（多卡片列表不逐张拉满） */
-body:not([data-noheader]) .archive,
-body:not([data-noheader]) .tag-cloud-page,
-body:not([data-noheader]) .categories-page,
-body:not([data-noheader]) .post,
-body:not([data-noheader]) .page {
-  min-height: calc(100vh - var(--header-height) - 8rem);
-}
-/* About 文字区：无边界无底板，仅轻微 blur 提升可读性；
-   文字阴影保证在任意气泡颜色上可见（自然融入背景） */
+/* About 文字区：无边界无底板无 blur，纯文字光晕融入背景 */
 [data-noheader] .home-about-inner {
   background: transparent;
   border: none;
   border-radius: 0;
   padding: 2.4rem 3rem;
-  -webkit-backdrop-filter: blur(7px) saturate(1.1);
-  backdrop-filter: blur(7px) saturate(1.1);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
   box-shadow: none;
   filter: none;
 }
