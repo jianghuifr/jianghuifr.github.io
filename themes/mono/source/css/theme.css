@@ -412,22 +412,29 @@ img { max-width: 100%; height: auto; }
   color: var(--color-text);
 }
 
-/* --- MicroLighter code blocks (post site CSS for ::highlight) --- */
-.post-content .m-code {
+/* --- MicroLighter code blocks：组件 grid 布局（行号 | 代码） --- */
+micro-lighter {
+  --syntax-background: var(--color-code-bg);
+  --syntax-foreground: var(--color-text);
+  display: grid;
+  margin: 1.5em 0;
   font-family: var(--font-mono);
   font-size: 0.86rem;
+  background: var(--color-code-bg);
+  border: 1px solid var(--color-border-light);
+  border-radius: var(--radius);
+  overflow: hidden;
 }
-.post-content .m-code pre {
+micro-lighter > pre {
   margin: 0;
   padding: 0.9rem 1rem;
   overflow-x: auto;
   line-height: 1.6;
-  background: var(--color-code-bg);
-  border: 1px solid var(--color-border-light);
-  border-radius: var(--radius);
+  background: transparent;
+  border: none;
 }
-.post-content .m-code pre code,
-.post-content .m-code code {
+micro-lighter pre code,
+micro-lighter code {
   font-family: var(--font-mono);
   font-size: 0.86rem;
   background: transparent;
@@ -441,8 +448,10 @@ micro-lighter::part(line-numbers) {
   font-size: 0.78rem;
   user-select: none;
   border-right: 1px solid var(--color-border-light);
-  padding-right: 0.6rem;
-  margin-right: 0.9rem;
+  padding: 0.9rem 0.7rem 0.9rem 0.9rem;
+  margin-right: 0;
+  text-align: right;
+  background: transparent;
 }
 micro-lighter::part(copy-button) {
   font-family: var(--font-sans);
@@ -454,6 +463,9 @@ micro-lighter::part(copy-button) {
   padding: 2px 8px;
   cursor: pointer;
   transition: color 0.15s, border-color 0.15s;
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
 }
 micro-lighter::part(copy-button):hover { color: var(--color-accent); border-color: var(--color-text-tertiary); }
 
