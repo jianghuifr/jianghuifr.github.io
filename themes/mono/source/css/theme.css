@@ -195,6 +195,7 @@ img { max-width: 100%; height: auto; }
 .search-toggle { --icon-w: 18px; }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--color-text); }
+.nav-toggle morph-icon > svg { width: 20px; height: 20px; display: block; }
 
 /* --- Home About（个人展示区）：首页全屏垂直居中 --- */
 /* 首页裸布局（body[data-noheader]）：无 header/footer，主体铺满窗口、无滚动条 */
@@ -266,23 +267,6 @@ img { max-width: 100%; height: auto; }
   justify-content: center;
   text-align: center;
 }
-/* 无 header 首页的右上角浮动导航 */
-.float-nav {
-  position: fixed;
-  top: 1.25rem;
-  right: 1.5rem;
-  z-index: 120;
-  display: flex;
-  gap: 1.1rem;
-  font-size: 0.85rem;
-}
-.float-nav a {
-  color: var(--color-text-secondary);
-  padding: 0.2rem 0.35rem;
-  border-radius: 4px;
-  transition: color 0.15s;
-}
-.float-nav a:hover { color: var(--color-accent); }
 .home-about-inner {
   display: flex;
   flex-direction: column;

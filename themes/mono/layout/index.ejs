@@ -1,10 +1,4 @@
-<%# 首页 = 个人展示页：about 内容内嵌，全屏垂直居中，无 header/footer %>
-<%# 无 header 时的浮动导航（右上角） %>
-<nav class="float-nav" aria-label="站点导航">
-  <% for (var name in theme.menu) { %>
-    <a href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
-  <% } %>
-</nav>
+<%# 首页 = 个人展示页：about 内容内嵌，全屏垂直居中，无 header/footer/浮动导航 %>
 <section class="home-about">
   <div class="home-about-inner">
     <div class="about-identity">jianghuifr</div>
