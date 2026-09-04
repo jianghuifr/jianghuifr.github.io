@@ -18,7 +18,9 @@
     <main class="main-content">
       <%- body %>
     </main>
-    <%- partial('partial/footer') %>
+    <% if (page.path !== 'index.html' && page.path !== '') { %>
+      <%- partial('partial/footer') %>
+    <% } %>
   </div>
   <button class="back-to-top" id="back-to-top" type="button" aria-label="回到顶部" title="回到顶部">
     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

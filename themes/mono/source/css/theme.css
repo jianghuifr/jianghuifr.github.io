@@ -197,9 +197,27 @@ img { max-width: 100%; height: auto; }
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--color-text); }
 
 /* --- Home About（个人展示区）：首页全屏垂直居中 --- */
-/* 首页无 header（body[data-noheader]），居中基准用完整视口 */
+/* 首页裸布局（body[data-noheader]）：无 header/footer，主体铺满窗口、无滚动条 */
+[data-noheader] {
+  height: 100vh;
+  overflow: hidden;
+}
+[data-noheader] .site-wrapper {
+  height: 100%;
+  min-height: 0;
+}
+[data-noheader] .main-content {
+  height: 100%;
+  max-width: none;
+  padding: 0;
+}
 [data-noheader] .home-about {
-  min-height: calc(100vh - 4rem);
+  min-height: 100%;
+  max-width: none;
+}
+/* 滚动条遮罩下返回顶部按钮在首页隐藏（正常无滚动） */
+[data-noheader] .back-to-top {
+  display: none;
 }
 /* 首页 WebGL 背景（底色跟随主题，shader canvas 本身覆盖其上） */
 .home-bg {
