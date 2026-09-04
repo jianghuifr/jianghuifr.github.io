@@ -36,12 +36,6 @@ export function initBubbles(container, options) {
     uniform float uTheme;
     uniform float uScale;
 
-    // HSV → RGB（彩虹色）
-    vec3 hsv2rgb(vec3 c) {
-      vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0/3.0, 1.0/3.0)) * 6.0 - 3.0);
-      return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
-    }
-
     void main() {
       vec2 uv = (2.0*gl_FragCoord.xy-uResolution.xy) / uResolution.y;
 
@@ -59,15 +53,18 @@ export function initBubbles(container, options) {
         float rad = (0.1 + 0.5*siz) * uScale;
         vec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*uTime*(0.2+0.8*siz),1.0));
         float dis = length( uv - pos );
-        // 七彩气泡：按序号均匀分布色相（黄金角）
-        float hue = fract(float(i) * 0.61803398875);
-        vec3 col = hsv2rgb(vec3(hue, 0.85, 0.92));
+        // 柔和蓝橙双色（参考原版 4dl3zn 的配色思路：低饱和、雾状融入）
+        // 浅色模式用稍弱的粉彩，深色模式用稍亮的余晖色
+        float phase = 0.5 + 0.5*sin(float(i)*1.2+1.9);
+        vec3 colLight = mix( vec3(0.86, 0.60, 0.34), vec3(0.36, 0.52, 0.72), phase );
+        vec3 colDark  = mix( vec3(0.93, 0.63, 0.38), vec3(0.38, 0.58, 0.82), phase );
+        vec3 col = mix( colLight, colDark, uTheme );
 
         float f = length(uv-pos)/rad;
         f = sqrt(clamp(1.0-f*f,0.0,1.0));
-        // 着色：浅色用减法混（亮底压深显彩），深色用加法混（暗底提亮显彩）
+        // 柔和混色：向气泡色插值（不深不艳），浅色 0.38 / 深色 0.55
         float mask = (1.0-smoothstep( rad*0.95, rad, dis )) * f;
-        color += (col.zyx - color) * mask * mix(0.55, 0.75, uTheme);
+        color += (col - color) * mask * mix(0.38, 0.55, uTheme);
       }
 
       // vigneting
