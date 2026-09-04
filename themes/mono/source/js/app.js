@@ -192,16 +192,19 @@
 
   // ---------- lightbox ----------
   // 支持三类内容：普通图片 <img>、mermaid 渲染的 <svg>、echarts 的 <canvas>。
-  // svg/canvas 先克隆/复制位图，不动原节点 —— 原图表的 echarts 实例、
-  // mermaid 交互不受影响。
+  // echarts 在灯箱内重新初始化（可交互），mermaid 可缩放/平移，关闭按钮/Esc/点背景退出。
   (function () {
     var overlay = document.getElementById('lightbox');
     var stage = document.getElementById('lightbox-stage');
     var caption = document.getElementById('lightbox-caption');
+    var closeBtn = document.getElementById('lightbox-close');
     if (!overlay || !stage) return;
     var lastFocus = null;
+    var activeChart = null;   // echarts 实例（灯箱内）
+    var activeCleanup = null; // 关闭时清理
 
     function open(content, capText) {
+      closeCurrent();
       lastFocus = document.activeElement;
       stage.innerHTML = '';
       stage.appendChild(content);
@@ -212,7 +215,14 @@
       document.body.style.overflow = 'hidden';
     }
 
+    function closeCurrent() {
+      if (activeChart && activeChart.dispose) activeChart.dispose();
+      activeChart = null;
+      if (activeCleanup) { activeCleanup(); activeCleanup = null; }
+    }
+
     function close() {
+      closeCurrent();
       overlay.setAttribute('aria-hidden', 'true');
       overlay.classList.remove('open');
       document.body.style.overflow = '';
@@ -229,12 +239,10 @@
       open(c, img.alt);
     }
 
-    // --- mermaid svg: 深克隆（含内联样式/viewBox），限制滚动容器 ---
+    // --- mermaid svg: 深克隆 + 缩放平移 ---
     function svgLb(origin) {
       var s = origin.cloneNode(true);
       s.classList.add('lightbox-media');
-      // svg 无固有尺寸时 max-width:100% 不生效（会塌缩成 0），
-      // 必须给出显式基准尺寸：按 viewBox 比例放大到视口限制内的最大宽
       s.removeAttribute('width');
       s.style.maxWidth = '';
       s.style.width = '';
@@ -242,59 +250,124 @@
       s.style.display = 'block';
 
       var vb = s.getAttribute('viewBox');
-      var rect = origin.getBoundingClientRect();
       if (vb) {
         var parts = vb.split(/\s+/).map(Number);
-        var ratio = parts[3] / parts[2]; // h / w
-        var maxW = Math.min(window.innerWidth - 64, 1600);
-        var maxH = window.innerHeight - 96;
+        var ratio = parts[3] / parts[2];
+        var maxW = Math.min(window.innerWidth - 96, 1600);
+        var maxH = window.innerHeight - 130;
         var w = maxW;
         if (ratio > 0 && w * ratio > maxH) w = maxH / ratio;
         s.setAttribute('width', Math.round(w));
         s.setAttribute('height', Math.round(w * ratio));
-      } else if (rect.width) {
-        s.setAttribute('width', Math.round(rect.width));
-        s.setAttribute('height', Math.round(rect.height));
       }
       open(s, '');
+
+      // 缩放 + 平移（滚轮/双击放大，拖拽移动）
+      var scale = 1, tx = 0, ty = 0, dragging = false, sx = 0, sy = 0, stx = 0, sty = 0;
+      function apply() {
+        s.style.transform = 'translate(' + tx + 'px,' + ty + 'px) scale(' + scale + ')';
+        s.style.transformOrigin = 'center';
+        s.style.cursor = scale > 1 ? 'grab' : 'zoom-in';
+      }
+      stage.addEventListener('wheel', function (e) {
+        e.preventDefault();
+        scale = Math.min(4, Math.max(0.5, scale * (e.deltaY < 0 ? 1.12 : 0.9)));
+        apply();
+      }, { passive: false });
+      stage.addEventListener('dblclick', function (e) {
+        e.preventDefault();
+        if (scale > 1) { scale = 1; tx = 0; ty = 0; }
+        else { scale = 2; }
+        apply();
+      });
+      stage.addEventListener('mousedown', function (e) {
+        if (scale <= 1) return;
+        dragging = true; sx = e.clientX; sy = e.clientY; stx = tx; sty = ty;
+      });
+      window.addEventListener('mousemove', function (e) {
+        if (!dragging) return;
+        tx = stx + (e.clientX - sx);
+        ty = sty + (e.clientY - sy);
+        apply();
+      });
+      window.addEventListener('mouseup', function () { dragging = false; });
+      activeCleanup = function () { scale = 1; tx = 0; ty = 0; };
+      apply();
     }
 
-    // --- echarts canvas: drawImage 复制位图（cloneNode 会丢像素） ---
+    // --- echarts: 灯箱内重新初始化（保留交互：tooltip/缩放） ---
+    function echartsLb(ecContainer) {
+      var cfgText = ecContainer.getAttribute('data-echarts-config');
+      if (!cfgText) {
+        // 无编译期配置时退回位图
+        var cv = ecContainer.querySelector('canvas');
+        if (cv) { canvasLb(cv); return; }
+        return;
+      }
+      var cfg;
+      try { cfg = JSON.parse(cfgText); } catch (e) { var cv0 = ecContainer.querySelector('canvas'); if (cv0) canvasLb(cv0); return; }
+
+      var wrap = document.createElement('div');
+      wrap.className = 'lightbox-media lightbox-chart';
+      wrap.style.width = Math.min(window.innerWidth - 96, 1200) + 'px';
+      wrap.style.height = Math.min(window.innerHeight - 130, 700) + 'px';
+      open(wrap, '');
+
+      function ensureEcharts(cb) {
+        if (window.echarts) { cb(); return; }
+        var sc = document.createElement('script');
+        sc.onload = cb;
+        sc.onerror = function () {};
+        sc.src = 'https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js';
+        document.head.appendChild(sc);
+      }
+      ensureEcharts(function () {
+        if (!window.echarts) return;
+        var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'mono-dark' : 'mono';
+        var chart = echarts.init(wrap, theme);
+        chart.setOption(cfg);
+        activeChart = chart;
+        new ResizeObserver(function () { chart.resize(); }).observe(wrap);
+      });
+    }
+
+    // --- echarts canvas 位图兜底 ---
     function canvasLb(cv) {
       var c = document.createElement('canvas');
       c.className = 'lightbox-media';
       c.width = cv.width;
       c.height = cv.height;
-      var ctx = c.getContext('2d');
-      ctx.drawImage(cv, 0, 0);
-      // 保持原始 css 尺寸（echarts 把逻辑尺寸写在 style 上）
+      c.getContext('2d').drawImage(cv, 0, 0);
       if (cv.style.width) c.style.width = cv.style.width;
       if (cv.style.height) c.style.height = cv.style.height;
       open(c, '');
     }
 
+    // 关闭按钮
+    if (closeBtn) closeBtn.addEventListener('click', close);
+
     document.addEventListener('click', function (e) {
       var t = e.target;
       if (!(t instanceof Element)) return;
 
-      // 灯箱开着时：点内容本体 / 遮罩 / 图注 → 关闭
+      // 灯箱开着时：点遮罩/图注/关闭按钮退出（不拦截图表内部交互）
       if (overlay.classList.contains('open')) {
-        if (t === overlay || stage.contains(t) || t === caption) { e.preventDefault(); close(); }
+        if (t === overlay || t === caption || t === closeBtn) { e.preventDefault(); close(); }
         return;
       }
 
-      // 内容在正文之外的一律不触发
       if (!t.closest('.post-content')) return;
 
-      // echarts 图表（容器是 <div class="echarts">，内部是 canvas）
+      // echarts 图表
       var ec = t.closest('.echarts');
       if (ec) {
-        var cv = ec.querySelector('canvas');
-        if (cv) { e.preventDefault(); canvasLb(cv); }
+        e.preventDefault();
+        // 避免点击图表内部交互（tooltip 等）时误触——仅点击容器非交互区生效
+        if (t.tagName === 'CANVAS' || t.closest('.echarts') === ec) { echartsLb(ec); }
         return;
       }
 
-      // mermaid 图（<pre class="mermaid"> 内的 svg）
+      // mermaid 图
       var mermaidPre = t.closest('pre.mermaid');
       if (mermaidPre) {
         var svg = mermaidPre.querySelector('svg');

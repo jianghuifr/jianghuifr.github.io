@@ -41,9 +41,13 @@ hexo.extend.filter.register('after_render:html', function (str) {
         .replace(/\n$/, '');
 
       // echarts 配置（来自 ```echarts 围栏）→ 数据容器，浏览器端 echarts 初始化
+      // data-echarts-config 存原始 JSON（HTML 转义），灯箱重新初始化用
       if (lang === '' || lang === 'plaintext' || lang === 'echarts') {
         if (isEchartsJson(text)) {
-          return '<div class="echarts">' + text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>';
+          var esc = text
+            .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;');
+          return '<div class="echarts" data-echarts-config="' + esc + '">' + text.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>';
         }
       }
 

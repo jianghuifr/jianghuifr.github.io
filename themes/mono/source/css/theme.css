@@ -406,10 +406,11 @@ img { max-width: 100%; height: auto; }
 .post-content code {
   font-family: var(--font-mono);
   font-size: 0.88em;
-  background: var(--color-surface-hover);
-  padding: 0.12em 0.38em;
-  border-radius: 3px;
+  background: none;
+  padding: 0;
+  border-radius: 0;
   color: var(--color-text);
+  border-bottom: 1px dotted var(--color-text-tertiary);
 }
 
 /* --- MicroLighter code blocks：组件 grid 布局（行号 | 代码） --- */
@@ -647,6 +648,28 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
 }
 .lightbox.open { display: flex; animation: search-fade 0.15s ease; }
 .lightbox-figure { max-width: 100%; max-height: 100%; display: flex; flex-direction: column; align-items: center; gap: 0.7rem; margin: 0; cursor: zoom-out; }
+.lightbox-close {
+  position: absolute;
+  top: 1rem;
+  right: 1.25rem;
+  z-index: 2;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.45);
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 15px;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+}
+.lightbox-close:hover {
+  background: rgba(0, 0, 0, 0.7);
+  border-color: rgba(255, 255, 255, 0.5);
+}
 .lightbox-stage {
   display: flex; align-items: center; justify-content: center;
   max-width: 100%; max-height: calc(100vh - 6rem);
@@ -656,6 +679,11 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
   max-height: calc(100vh - 6rem);
   border-radius: var(--radius);
   box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+}
+/* echarts 灯箱内重新初始化的容器 */
+.lightbox-chart {
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: var(--radius);
 }
 /* mermaid SVG 在灯箱里按 JS 算好的基准尺寸渲染，max 限制防止超视口 */
 .lightbox-stage svg.lightbox-media {
