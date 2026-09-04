@@ -3,10 +3,6 @@
 <%- partial('partial/head') %>
 <% var isHome = (page.path === 'index.html' || page.path === ''); %>
 <body<%= isHome ? ' data-noheader' : '' %>>
-  <%# WebGL 背景全站常驻（SPA 切换时不重建） %>
-  <div class="home-bg" id="home-bg" aria-hidden="true">
-    <div id="bg-bubbles"></div>
-  </div>
   <div class="reading-progress" aria-hidden="true">
     <div class="reading-progress-bar" id="reading-progress-bar"></div>
   </div>
@@ -47,15 +43,10 @@
   </div>
 
   <script>
-    // 供 SPA 路由/背景加载使用
-    window.__MONO_BG = {
-      threeUrl: '<%- url_for('/vendor/three.module.js') %>',
-      coreUrl: '<%- url_for('/js/bubbles-core.js') %>',
-      isHome: <%= isHome ? 'true' : 'false' %>
-    };
+    // 供 SPA 路由使用（首页状态，控制 header/footer 显隐）
+    window.__MONO_BG = { isHome: <%= isHome ? 'true' : 'false' %> };
   </script>
-  <script src="<%- url_for('/js/app.js?v=7') %>"></script>
-  <script src="<%- url_for('/js/background.js?v=7') %>"></script>
-  <script src="<%- url_for('/js/code.js?v=7') %>"></script>
+  <script src="<%- url_for('/js/app.js?v=8') %>"></script>
+  <script src="<%- url_for('/js/code.js?v=8') %>"></script>
 </body>
 </html>
