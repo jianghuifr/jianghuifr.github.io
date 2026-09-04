@@ -21,7 +21,8 @@ export function initBubbles(container, options) {
     uTime:       { value: 0 },
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
     uSpeed:      { value: 1.0 },
-    uTheme:      { value: theme }
+    uTheme:      { value: theme },
+    uScale:      { value: 1.0 }
   };
 
   var vertexShader = `
@@ -33,6 +34,13 @@ export function initBubbles(container, options) {
     uniform vec2  uResolution;
     uniform float uSpeed;
     uniform float uTheme;
+    uniform float uScale;
+
+    // HSV → RGB（彩虹色）
+    vec3 hsv2rgb(vec3 c) {
+      vec3 p = abs(fract(c.xxx + vec3(0.0, 2.0/3.0, 1.0/3.0)) * 6.0 - 3.0);
+      return c.z * mix(vec3(1.0), clamp(p - 1.0, 0.0, 1.0), c.y);
+    }
 
     void main() {
       vec2 uv = (2.0*gl_FragCoord.xy-uResolution.xy) / uResolution.y;
@@ -48,17 +56,18 @@ export function initBubbles(container, options) {
         float siz = pow( sin(float(i)*651.74+5.0)*0.5 + 0.5, 4.0 );
         float pox =      sin(float(i)*321.55+4.1) * uResolution.x / uResolution.y;
 
-        float rad = 0.1 + 0.5*siz;
+        float rad = (0.1 + 0.5*siz) * uScale;
         vec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*uTime*(0.2+0.8*siz),1.0));
         float dis = length( uv - pos );
-        // 气泡色：浅色模式用低调蓝灰（在亮底上若隐若现），深色模式用亮蓝灰（在暗底上显形）
-        vec3 colLight = mix( vec3(0.30, 0.36, 0.48), vec3(0.20, 0.38, 0.55), 0.5+0.5*sin(float(i)*1.2+1.9));
-        vec3 colDark  = mix( vec3(0.30, 0.42, 0.68), vec3(0.16, 0.42, 0.72), 0.5+0.5*sin(float(i)*1.2+1.9));
-        vec3 col = mix( colLight, colDark, uTheme );
+        // 七彩气泡：按序号均匀分布色相（黄金角）
+        float hue = fract(float(i) * 0.61803398875);
+        vec3 col = hsv2rgb(vec3(hue, 0.85, 0.92));
 
         float f = length(uv-pos)/rad;
         f = sqrt(clamp(1.0-f*f,0.0,1.0));
-        color -= col.zyx *(1.0-smoothstep( rad*0.95, rad, dis )) * f * (0.85 + 0.75*uTheme);
+        // 着色：浅色用减法混（亮底压深显彩），深色用加法混（暗底提亮显彩）
+        float mask = (1.0-smoothstep( rad*0.95, rad, dis )) * f;
+        color += (col.zyx - color) * mask * mix(0.55, 0.75, uTheme);
       }
 
       // vigneting
@@ -96,6 +105,10 @@ export function initBubbles(container, options) {
     setTheme: function (isDark) {
       theme = isDark ? 1 : 0;
       uniforms.uTheme.value = theme;
+    },
+    // 移动端缩放气泡（0~1）：1 = 原始尺寸
+    setScale: function (s) {
+      uniforms.uScale.value = s || 1.0;
     },
     dispose: function () {
       window.removeEventListener('resize', resize);

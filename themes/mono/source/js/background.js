@@ -27,6 +27,19 @@
 
   import(cfg.coreUrl).then(function (mod) {
     var api = mod.initBubbles(container, { isDark: currentIsDark() });
+
+    // 移动端气泡缩小适配：视口越窄，气泡越小（保留数量，更碎更轻盈）
+    function applyScale() {
+      var w = window.innerWidth;
+      var s = 1.0;
+      if (w <= 480) s = 0.42;
+      else if (w <= 768) s = 0.55;
+      else if (w <= 1024) s = 0.72;
+      api.setScale(s);
+    }
+    applyScale();
+    window.addEventListener('resize', applyScale);
+
     // 主题切换时同步 shader
     new MutationObserver(function () {
       api.setTheme(currentIsDark());

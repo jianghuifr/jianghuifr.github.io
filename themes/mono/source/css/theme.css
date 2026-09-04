@@ -209,30 +209,26 @@ img { max-width: 100%; height: auto; }
   background: var(--color-bg);
 }
 .home-bg canvas { display: block; width: 100%; height: 100%; }
-/* About 文字半透明底板，保证在气泡背景上可读（主题自适应） */
+/* About 文字区：无边界无底板，仅轻微 blur 提升可读性；
+   文字阴影保证在任意气泡颜色上可见（自然融入背景） */
 [data-noheader] .home-about-inner {
-  background: var(--about-panel-bg, rgba(15, 17, 20, 0.55));
-  border: 1px solid var(--about-panel-border, rgba(255, 255, 255, 0.14));
-  border-radius: 14px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   padding: 2.4rem 3rem;
-  -webkit-backdrop-filter: blur(10px);
-  backdrop-filter: blur(10px);
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+  -webkit-backdrop-filter: blur(7px) saturate(1.1);
+  backdrop-filter: blur(7px) saturate(1.1);
+  box-shadow: none;
+  filter: none;
 }
-:root {
-  /* 默认（浅色）：亮色半透明底板 */
-  --about-panel-bg: rgba(245, 245, 245, 0.6);
-  --about-panel-border: rgba(17, 17, 17, 0.12);
+/* 文字光晕：浅色模式深字白晕、深色模式浅字黑晕（跟随 --color-bg） */
+[data-noheader] .about-identity,
+[data-noheader] .about-role,
+[data-noheader] .about-note {
+  text-shadow: 0 0 14px var(--color-bg), 0 0 3px var(--color-bg);
 }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --about-panel-bg: rgba(15, 17, 20, 0.55);
-    --about-panel-border: rgba(255, 255, 255, 0.14);
-  }
-}
-:root[data-theme="dark"] {
-  --about-panel-bg: rgba(15, 17, 20, 0.55);
-  --about-panel-border: rgba(255, 255, 255, 0.14);
+[data-noheader] .about-entry {
+  box-shadow: 0 0 14px var(--color-bg);
 }
 .home-about {
   width: 100%;
