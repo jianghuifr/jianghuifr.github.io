@@ -1,4 +1,4 @@
-<%# 首页 = 个人展示页：上方 about 内容垂直居中，下方文章列表 %>
+<%# 首页 = 纯个人展示页：about 内容全屏垂直居中 %>
 <%
 var aboutPage = null;
 site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; });
@@ -8,11 +8,6 @@ site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; }
     <% if (aboutPage) { %>
       <%- aboutPage.content %>
     <% } %>
+    <a class="about-entry" href="<%- url_for('/archives') %>">查看笔记 &rarr;</a>
   </div>
 </section>
-<div class="post-list">
-  <% page.posts.each(function(post){ %>
-    <%- partial('partial/post-card', {post: post}) %>
-  <% }) %>
-</div>
-<%- partial('partial/pagination') %>

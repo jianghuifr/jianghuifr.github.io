@@ -196,11 +196,12 @@ img { max-width: 100%; height: auto; }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--color-text); }
 
-/* --- Home About（个人展示区）--- */
+/* --- Home About（个人展示区）：首页全屏垂直居中 --- */
 .home-about {
+  width: 100%;
   max-width: var(--content-width);
-  margin: 0 auto 2.5rem;
-  min-height: 32vh;
+  margin: 0 auto;
+  min-height: calc(100vh - var(--header-height) - 5rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -211,6 +212,7 @@ img { max-width: 100%; height: auto; }
   flex-direction: column;
   align-items: center;
   gap: 0.4rem;
+  padding: 2rem 1rem;
 }
 /* about 三行样式（首页与 /about 页共用） */
 .about-identity {
@@ -227,6 +229,26 @@ img { max-width: 100%; height: auto; }
 .about-note {
   font-size: 0.9rem;
   color: var(--color-text-tertiary);
+}
+/* 「查看笔记」入口按钮 */
+.about-entry {
+  margin-top: 1.6rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 1.1rem;
+  font-size: 0.88rem;
+  color: var(--color-text);
+  border: 1px solid var(--color-border-2, #CCCCCC);
+  border-radius: 99px;
+  background: var(--color-surface);
+  transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
+}
+.about-entry:hover {
+  color: var(--color-accent);
+  border-color: var(--color-accent);
+  background: var(--color-surface-hover);
+  transform: translateY(-1px);
 }
 /* /about 页面：整个内容区垂直居中 */
 .page-about {
