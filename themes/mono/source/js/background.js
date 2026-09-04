@@ -1,5 +1,6 @@
 // 首页背景动效：Bubbles（ShaderToy 4dl3zn 复刻，仅核心渲染，无面板）
 // 由 index 首页 lazy 加载；仅在 body[data-noheader] 时激活。
+// 跟随站点主题（data-theme / prefers-color-scheme）切换深浅色。
 // 版权：原作者 Inigo Quilez 2013（教育学习复刻，勿公开分发/商用）。
 (function () {
   'use strict';
@@ -10,7 +11,13 @@
   var cfg = window.__MONO_BG || {};
   if (!container || !cfg.coreUrl) return;
 
-  // three.module.js borrows importmap; 单独声明避免污染主页面模块图
+  function currentIsDark() {
+    var t = document.documentElement.getAttribute('data-theme');
+    if (t === 'dark') return true;
+    if (t === 'light') return false;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches;
+  }
+
   var importMap = document.createElement('script');
   importMap.type = 'importmap';
   importMap.textContent = JSON.stringify({
@@ -19,7 +26,18 @@
   document.head.appendChild(importMap);
 
   import(cfg.coreUrl).then(function (mod) {
-    mod.initBubbles(container);
+    var api = mod.initBubbles(container, { isDark: currentIsDark() });
+    // 主题切换时同步 shader
+    new MutationObserver(function () {
+      api.setTheme(currentIsDark());
+    }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    // 系统深浅色跟随（未手动设置时）
+    var mql = window.matchMedia('(prefers-color-scheme: dark)');
+    mql.addEventListener('change', function () {
+      var hasManual = false;
+      try { hasManual = !!localStorage.getItem('mono-theme'); } catch (e) {}
+      if (!hasManual) api.setTheme(mql.matches);
+    });
   }).catch(function () {
     container.parentNode.removeChild(container);
   });

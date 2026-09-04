@@ -201,23 +201,38 @@ img { max-width: 100%; height: auto; }
 [data-noheader] .home-about {
   min-height: calc(100vh - 4rem);
 }
-/* 首页 WebGL 背景 */
+/* 首页 WebGL 背景（底色跟随主题，shader canvas 本身覆盖其上） */
 .home-bg {
   position: fixed;
   inset: 0;
   z-index: -1;
-  background: #17191D;
+  background: var(--color-bg);
 }
 .home-bg canvas { display: block; width: 100%; height: 100%; }
-/* About 文字深色半透明底板，保证在气泡背景上可读 */
+/* About 文字半透明底板，保证在气泡背景上可读（主题自适应） */
 [data-noheader] .home-about-inner {
-  background: rgba(15, 17, 20, 0.55);
-  border: 1px solid rgba(255, 255, 255, 0.14);
+  background: var(--about-panel-bg, rgba(15, 17, 20, 0.55));
+  border: 1px solid var(--about-panel-border, rgba(255, 255, 255, 0.14));
   border-radius: 14px;
   padding: 2.4rem 3rem;
   -webkit-backdrop-filter: blur(10px);
   backdrop-filter: blur(10px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+}
+:root {
+  /* 默认（浅色）：亮色半透明底板 */
+  --about-panel-bg: rgba(245, 245, 245, 0.6);
+  --about-panel-border: rgba(17, 17, 17, 0.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --about-panel-bg: rgba(15, 17, 20, 0.55);
+    --about-panel-border: rgba(255, 255, 255, 0.14);
+  }
+}
+:root[data-theme="dark"] {
+  --about-panel-bg: rgba(15, 17, 20, 0.55);
+  --about-panel-border: rgba(255, 255, 255, 0.14);
 }
 .home-about {
   width: 100%;

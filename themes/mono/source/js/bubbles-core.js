@@ -1,10 +1,11 @@
-// Bubbles 核心：ShaderToy 4dl3zn 复刻（去 UI 版本）
+// Bubbles 核心：ShaderToy 4dl3zn 复刻（去 UI 版本，支持主题切换）
 // 版权：Inigo Quilez 2013 - https://iquilezles.org/（教育学习复刻，勿公开分发/商用）
 import * as THREE from 'three';
 
 export function initBubbles(container, options) {
   var opts = options || {};
-  var startTime = performance.now();
+  // isDark: 初始主题（0 = 浅色, 1 = 深色），可随时用 setTheme 更新
+  var theme = opts.isDark ? 1 : 0;
 
   var renderer = new THREE.WebGLRenderer({ antialias: false, powerPreference: 'high-performance' });
   renderer.setClearColor(0x000000, 1);
@@ -19,7 +20,8 @@ export function initBubbles(container, options) {
   var uniforms = {
     uTime:       { value: 0 },
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-    uSpeed:      { value: 1.0 }
+    uSpeed:      { value: 1.0 },
+    uTheme:      { value: theme }
   };
 
   var vertexShader = `
@@ -30,12 +32,14 @@ export function initBubbles(container, options) {
     uniform float uTime;
     uniform vec2  uResolution;
     uniform float uSpeed;
+    uniform float uTheme;
 
     void main() {
       vec2 uv = (2.0*gl_FragCoord.xy-uResolution.xy) / uResolution.y;
 
-      // background（适配 mono：深色底，气泡为蓝灰点缀）
-      vec3 color = vec3(0.055 + 0.018*uv.y);
+      // background：深色模式暗底，浅色模式亮灰底（贴近 mono --color-bg）
+      vec3 color = mix( vec3(0.955, 0.955, 0.965), vec3(0.055, 0.062, 0.075), uTheme );
+      color += (0.018*uv.y) * mix(1.0, 1.0, uTheme);
 
       // bubbles
       for( int i=0; i<40; i++ )
@@ -47,12 +51,14 @@ export function initBubbles(container, options) {
         float rad = 0.1 + 0.5*siz;
         vec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*uTime*(0.2+0.8*siz),1.0));
         float dis = length( uv - pos );
-        // mono 配色：蓝灰气泡（稍亮，保证动效可见）
-        vec3  col = mix( vec3(0.30,0.42,0.68), vec3(0.16,0.42,0.72), 0.5+0.5*sin(float(i)*1.2+1.9));
+        // 气泡色：浅色模式用低调蓝灰（在亮底上若隐若现），深色模式用亮蓝灰（在暗底上显形）
+        vec3 colLight = mix( vec3(0.30, 0.36, 0.48), vec3(0.20, 0.38, 0.55), 0.5+0.5*sin(float(i)*1.2+1.9));
+        vec3 colDark  = mix( vec3(0.30, 0.42, 0.68), vec3(0.16, 0.42, 0.72), 0.5+0.5*sin(float(i)*1.2+1.9));
+        vec3 col = mix( colLight, colDark, uTheme );
 
         float f = length(uv-pos)/rad;
         f = sqrt(clamp(1.0-f*f,0.0,1.0));
-        color -= col.zyx *(1.0-smoothstep( rad*0.95, rad, dis )) * f * 1.6;
+        color -= col.zyx *(1.0-smoothstep( rad*0.95, rad, dis )) * f * (0.85 + 0.75*uTheme);
       }
 
       // vigneting
@@ -76,13 +82,10 @@ export function initBubbles(container, options) {
   }
   window.addEventListener('resize', resize);
 
-  var playing = !opts.reducedMotion;
-  // 非手动暂停：macOS 窗口失焦/切页也自然暂停由浏览器 RAF 保证
-
   function animate() {
     requestAnimationFrame(animate);
     var dt = clock.getDelta();
-    if (playing) uniforms.uTime.value += dt * uniforms.uSpeed.value;
+    uniforms.uTime.value += dt * uniforms.uSpeed.value;
     renderer.render(scene, camera);
   }
 
@@ -90,7 +93,10 @@ export function initBubbles(container, options) {
   animate();
 
   return {
-    // 页面隐藏时释放资源（可选）
+    setTheme: function (isDark) {
+      theme = isDark ? 1 : 0;
+      uniforms.uTheme.value = theme;
+    },
     dispose: function () {
       window.removeEventListener('resize', resize);
       renderer.dispose();
