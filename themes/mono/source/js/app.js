@@ -455,6 +455,44 @@
     });
   })();
 
+  // ---------- page transitions ----------
+  (function () {
+    var wrapper = document.querySelector('.site-wrapper');
+    if (!wrapper) return;
+
+    // 进入：首屏 / bfcache 返回时淡入
+    var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function fadeIn() {
+      if (reduced) return;
+      wrapper.classList.remove('page-out');
+      wrapper.classList.add('page-in');
+      setTimeout(function () { wrapper.classList.remove('page-in'); }, 450);
+    }
+    fadeIn();
+
+    // 离开：拦截同源常规链接（排除外链/锚点/新标签/下载），淡出后再跳转
+    document.addEventListener('click', function (e) {
+      if (e.defaultPrevented) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.button !== undefined && e.button !== 0)) return;
+      var a = e.target instanceof Element ? e.target.closest('a') : null;
+      if (!a) return;
+      if (a.target && a.target !== '_self') return;
+      if (a.hasAttribute('download')) return;
+      var href = a.getAttribute('href');
+      if (!href || href.charAt(0) === '#') return;
+      var url;
+      try { url = new URL(a.href, location.href); } catch (err) { return; }
+      if (url.origin !== location.origin) return;
+      // 同页锚点或完全同 URL 不淡出
+      if (url.pathname === location.pathname && (url.hash || url.search === location.search)) return;
+
+      e.preventDefault();
+      if (reduced) { window.location.href = a.href; return; }
+      wrapper.classList.add('page-out');
+      setTimeout(function () { window.location.href = a.href; }, 230);
+    }, true);
+  })();
+
   // ---------- boot ----------
   isDark = currentTheme() === 'dark';
   setupMorphIcons();

@@ -287,13 +287,13 @@ img { max-width: 100%; height: auto; }
   font-size: 0.9rem;
   color: var(--color-text-tertiary);
 }
-/* 首页小图标并排（笔记 / 相册 / GitHub） */
+/* 首页小图标并排（笔记 / 相册 / GitHub）——无边框、纯图标 */
 .about-icons {
   margin-top: 1.6rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 0.8rem;
+  gap: 1.1rem;
 }
 .about-icon {
   width: 42px;
@@ -302,20 +302,17 @@ img { max-width: 100%; height: auto; }
   align-items: center;
   justify-content: center;
   color: var(--color-text);
-  border: 1px solid var(--color-border-2, #CCCCCC);
-  border-radius: 50%;
-  background: var(--color-surface);
-  transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
+  border-radius: 8px;
+  transition: color 0.15s, background 0.15s, transform 0.15s;
 }
 .about-icon svg {
-  width: 20px;
-  height: 20px;
+  width: 21px;
+  height: 21px;
   display: block;
 }
 .about-icon:hover {
   color: var(--color-accent);
-  border-color: var(--color-accent);
-  background: var(--color-surface-hover);
+  background: var(--color-surface);
   transform: translateY(-2px);
 }
 
@@ -722,4 +719,51 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
   .post-nav { flex-direction: column; }
   .post-nav a { max-width: 100%; }
   .search-overlay { padding: 7vh 0.75rem 0.75rem; }
+}
+
+/* ============================================
+   Page transitions & theme cross-fade
+   ============================================ */
+
+/* 页面进入：内容淡入上浮 */
+@keyframes page-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.page-in { animation: page-in 0.4s ease both; }
+
+/* 页面离开：点击跳转前的统一过渡（JS 拦截加 class） */
+.page-out {
+  opacity: 0 !important;
+  transform: translateY(-6px);
+  transition: opacity 0.22s ease, transform 0.22s ease;
+}
+
+/* 主题切换：主要容器颜色平滑过渡（背景/前景/边框/卡片） */
+body,
+.site-header,
+.site-footer,
+.main-content .post-card,
+.main-content .profile-card,
+.search-panel,
+.toc-wrapper,
+.lightbox-figure,
+.about-icon:hover,
+.post-card-tags a,
+.tag-cloud-item {
+  transition:
+    background-color 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+/* 主题切换时 body 底色渐变 */
+body {
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+/* 尊重系统减弱动效偏好 */
+@media (prefers-reduced-motion: reduce) {
+  .page-in { animation: none; }
+  .page-out { transition: none; }
 }
