@@ -304,17 +304,19 @@ img { max-width: 100%; height: auto; }
   justify-content: center;
   color: var(--color-text);
   border-radius: 8px;
-  transition: color 0.15s, background 0.15s, transform 0.15s;
+  cursor: pointer;
+  transition: none; /* 覆盖全局 a 的 color transition：完全无动效 */
 }
 .about-icon svg {
   width: 21px;
   height: 21px;
   display: block;
 }
+/* hover 无动效无背景，仅手型光标（a 标签默认 pointer，这里显式声明） */
 .about-icon:hover {
-  color: var(--color-accent);
-  background: var(--color-surface);
-  transform: translateY(-2px);
+  color: var(--color-text);
+  background: none;
+  transform: none;
 }
 
 /* --- Post List --- */
@@ -790,7 +792,6 @@ body,
 .search-panel,
 .toc-wrapper,
 .lightbox-figure,
-.about-icon:hover,
 .post-card-tags a,
 .tag-cloud-item {
   transition:
