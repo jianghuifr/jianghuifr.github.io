@@ -560,6 +560,19 @@
       document.title = doc.title || document.title;
       document.body.toggleAttribute('data-noheader', isHome);
       window.__MONO_BG.isHome = isHome;
+      // innerHTML 注入的 <script> 不执行：手动提取并执行页面内嵌脚本
+      // （album 等页面的图库/灯箱逻辑依赖它）
+      var scripts = newMain.querySelectorAll('script');
+      scripts.forEach(function (s) {
+        var ns = document.createElement('script');
+        if (s.src) {
+          ns.src = s.src;
+          ns.async = false;
+        } else {
+          ns.textContent = s.textContent;
+        }
+        document.body.appendChild(ns);
+      });
       // 通知各模块重新初始化（mermaid/echarts/code 包装/目录等）
       document.dispatchEvent(new CustomEvent('mono:routechange', { detail: { url: url.href, isHome: isHome } }));
       return true;
