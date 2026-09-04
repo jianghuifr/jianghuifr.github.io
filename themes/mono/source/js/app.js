@@ -528,13 +528,19 @@
     });
   })();
 
-  // ---------- page transitions ----------
+  // ---------- SPA router ----------
+  // 站内导航用 fetch + DOMParser 替换 main-content（不整页跳转）：
+  // - WebGL 背景 canvas / header / footer / 全局脚本 全程保留
+  // - 浏览器缓存 HTML（fetch 默认走缓存），切换即缓存命中
+  // - pushState 无刷新；popstate（前进后退）同样用缓存内容恢复
   (function () {
     var wrapper = document.querySelector('.site-wrapper');
-    if (!wrapper) return;
+    var mainEl = document.getElementById('main-content');
+    if (!wrapper || !mainEl) return;
 
-    // 进入：首屏 / bfcache 返回时淡入
     var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    var pendingRoute = null; // {url, title, html} 防止快速连点重复 fetch
+
     function fadeIn() {
       if (reduced) return;
       wrapper.classList.remove('page-out');
@@ -543,7 +549,57 @@
     }
     fadeIn();
 
-    // 离开：拦截同源常规链接（排除外链/锚点/新标签/下载），淡出后再跳转
+    // 提取新页的 main 内容并应用
+    function applyHtml(html, url) {
+      var doc = new DOMParser().parseFromString(html, 'text/html');
+      var newMain = doc.querySelector('#main-content');
+      if (!newMain) return false;
+      var isHome = (url.pathname === '/' || url.pathname === '/index.html');
+      mainEl.innerHTML = newMain.innerHTML;
+      // 更新 title 与 data-noheader（首页隐藏 header/footer）
+      document.title = doc.title || document.title;
+      document.body.toggleAttribute('data-noheader', isHome);
+      window.__MONO_BG.isHome = isHome;
+      // 通知各模块重新初始化（mermaid/echarts/code 包装/目录等）
+      document.dispatchEvent(new CustomEvent('mono:routechange', { detail: { url: url.href, isHome: isHome } }));
+      return true;
+    }
+
+    function navigateTo(href, opts) {
+      opts = opts || {};
+      var url;
+      try { url = new URL(href, location.href); } catch (e) { return; }
+
+      // 首页进出：背景已经在跑，无需动；仅切换 main
+      var doFetch = function () {
+        var fetchOpt = { credentials: 'same-origin' };
+        fetch(url.href, fetchOpt)
+          .then(function (r) { if (!r.ok) throw new Error('fetch ' + r.status); return r.text(); })
+          .then(function (html) {
+            wrapper.classList.add('page-out');
+            setTimeout(function () {
+              if (!applyHtml(html, url)) { window.location.href = url.href; return; }
+              wrapper.classList.remove('page-out');
+              wrapContentAgain();
+              fadeIn();
+              if (opts.push !== false) history.pushState({ monoRoute: url.href }, '', url.href);
+              window.scrollTo(0, 0);
+            }, 200);
+          })
+          .catch(function () {
+            // fetch 失败（离线/网络）→ 整页跳转兜底
+            window.location.href = url.href;
+          });
+      };
+
+      // 淡出后进入；若当前已是淡出态（快速连点）直接 fetch
+      if (wrapper.classList.contains('page-out')) { doFetch(); return; }
+      if (reduced) { doFetch(); return; }
+      wrapper.classList.add('page-out');
+      setTimeout(doFetch, 140);
+    }
+
+    // 拦截普通内链（与外链/锚点/新标签/下载区分）
     document.addEventListener('click', function (e) {
       if (e.defaultPrevented) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || (e.button !== undefined && e.button !== 0)) return;
@@ -556,15 +612,32 @@
       var url;
       try { url = new URL(a.href, location.href); } catch (err) { return; }
       if (url.origin !== location.origin) return;
-      // 同页锚点或完全同 URL 不淡出
       if (url.pathname === location.pathname && (url.hash || url.search === location.search)) return;
 
       e.preventDefault();
-      if (reduced) { window.location.href = a.href; return; }
-      wrapper.classList.add('page-out');
-      setTimeout(function () { window.location.href = a.href; }, 230);
+      navigateTo(url.href);
     }, true);
+
+    // 前进/后退：用浏览器缓存恢复（无 fetch）
+    window.addEventListener('popstate', function (e) {
+      var url = (e.state && e.state.monoRoute) || location.href;
+      fetch(url, { credentials: 'same-origin' })
+        .then(function (r) { return r.text(); })
+        .then(function (html) {
+          if (applyHtml(html, new URL(url))) {
+            wrapContentAgain();
+            window.scrollTo(0, 0);
+          }
+        })
+        .catch(function () { window.location.reload(); });
+    });
   })();
+
+  // SPA 切换后重新包装代码块（micro-lighter 等）由 code.js 监听 mono:routechange 处理；
+  // 此函数由 code.js 覆盖（见 code.js 末尾）
+  function wrapContentAgain() {
+    if (window.__monoWrapContent) window.__monoWrapContent();
+  }
 
   // ---------- boot ----------
   isDark = currentTheme() === 'dark';

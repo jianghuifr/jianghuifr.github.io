@@ -1,11 +1,9 @@
-// 首页背景动效：Bubbles（ShaderToy 4dl3zn 复刻，仅核心渲染，无面板）
-// 由 index 首页 lazy 加载；仅在 body[data-noheader] 时激活。
+// 全站 WebGL 背景动效：Bubbles（ShaderToy 4dl3zn 复刻，仅核心渲染，无面板）
+// 所有页面常驻（layout 全局引入），SPA 路由切换时不被重建。
 // 跟随站点主题（data-theme / prefers-color-scheme）切换深浅色。
 // 版权：原作者 Inigo Quilez 2013（教育学习复刻，勿公开分发/商用）。
 (function () {
   'use strict';
-
-  if (!document.body || !document.body.hasAttribute('data-noheader')) return;
 
   var container = document.getElementById('bg-bubbles');
   var cfg = window.__MONO_BG || {};
@@ -27,19 +25,6 @@
 
   import(cfg.coreUrl).then(function (mod) {
     var api = mod.initBubbles(container, { isDark: currentIsDark() });
-
-    // 移动端气泡缩小适配：视口越窄，气泡越小（保留数量，更碎更轻盈）
-    function applyScale() {
-      var w = window.innerWidth;
-      var s = 1.0;
-      if (w <= 480) s = 0.42;
-      else if (w <= 768) s = 0.55;
-      else if (w <= 1024) s = 0.72;
-      api.setScale(s);
-    }
-    applyScale();
-    window.addEventListener('resize', applyScale);
-
     // 主题切换时同步 shader
     new MutationObserver(function () {
       api.setTheme(currentIsDark());
@@ -51,6 +36,7 @@
       try { hasManual = !!localStorage.getItem('mono-theme'); } catch (e) {}
       if (!hasManual) api.setTheme(mql.matches);
     });
+    // 窗口大小变化时（resize 已在 core 内处理 canvas size；这里无需额外）
   }).catch(function () {
     container.parentNode.removeChild(container);
   });

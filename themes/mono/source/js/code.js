@@ -1,28 +1,24 @@
 // Mono code rendering:
 // 1. MicroLighter (<micro-lighter> element: copy button + line numbers on by default)
 // 2. mermaid & echarts — lazy-loaded CDN, only when present on the page
+// 支持 SPA 路由（mono:routechange）重复初始化。
 (function () {
   'use strict';
 
   var ML_CDN = 'https://cdn.jsdelivr.net/npm/microlighter@2.1.0/dist/micro-lighter-element.min.js';
   var MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.min.js';
   var ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js';
-  var hasMermaid = document.querySelector('pre.mermaid');
-  var hasEcharts = document.querySelector('.echarts');
-  var hasCode = document.querySelector('pre > code');
+
+  var mlLoaded = false;
+  var mermaidLoaded = false;
+  var echartsLoaded = false;
 
   // ---------- MicroLighter ----------
-  // <micro-lighter> wraps every pre>code. Its shadow DOM renders line numbers
-  // ([line-numbers]) and Copy button (controls="copy") — both on by default.
-  // Grammar modules load on demand from the same CDN path.
-  // NOTE: it's an ES module — must load via <script type="module">.
-  if (hasCode && window.CSS && CSS.highlights) {
-    var s = document.createElement('script');
-    s.type = 'module';
-    s.src = ML_CDN;
-    s.onload = function () {
-      // module 内已自动 customElements.define('micro-lighter')，
-      // 但以防先于 DOM 存在时未升级，这里直接包装
+  function initMicroLighter() {
+    var hasCode = document.querySelector('pre > code');
+    if (!hasCode || !window.CSS || !CSS.highlights) return;
+
+    function wrapAll() {
       document.querySelectorAll('pre > code').forEach(function (code) {
         var pre = code.parentElement;
         if (!pre || pre.closest('micro-lighter')) return;
@@ -32,26 +28,40 @@
         pre.parentNode.insertBefore(ml, pre);
         ml.appendChild(pre);
       });
-      // 触发一次高亮（组件 connectedCallback 里已调用 highlightAll）
-    };
-    s.onerror = function () {};
+    }
+
+    if (mlLoaded) { wrapAll(); return; }
+    mlLoaded = true; // 幂等：组件只需 define 一次
+    var s = document.createElement('script');
+    s.type = 'module';
+    s.src = ML_CDN;
+    s.onload = wrapAll;
+    s.onerror = function () { mlLoaded = false; };
     document.head.appendChild(s);
   }
 
   // ---------- mermaid ----------
-  if (hasMermaid) {
-    loadScript(MERMAID_CDN, function () {
+  function initMermaid() {
+    var hasMermaid = document.querySelector('pre.mermaid');
+    if (!hasMermaid) return;
+
+    function render() {
       if (typeof mermaid === 'undefined') return;
-      var theme = currentCodeTheme();
-      mermaid.initialize({ startOnLoad: false, theme: theme, securityLevel: 'loose', fontFamily: '"LXGW WenKai GB", sans-serif' });
+      mermaid.initialize({ startOnLoad: false, theme: currentCodeTheme(), securityLevel: 'loose', fontFamily: '"LXGW WenKai GB", sans-serif' });
       mermaid.run({ querySelector: 'pre.mermaid' }).catch(function (e) { console.warn('mermaid render failed:', e); });
-    });
+    }
+
+    if (mermaidLoaded) { render(); return; }
+    mermaidLoaded = true;
+    loadScript(MERMAID_CDN, function () { render(); });
   }
 
   // ---------- echarts ----------
-  if (hasEcharts) {
-    loadScript(ECHARTS_CDN, function () {
-      if (typeof echarts === 'undefined') return;
+  function initEcharts() {
+    var hasEcharts = document.querySelector('.echarts');
+    if (!hasEcharts) return;
+
+    function register() {
       echarts.registerTheme('mono', {
         'color': ['#333333', '#666666', '#999999', '#CCCCCC', '#0284C7', '#059669', '#8B5CF6', '#D97706'],
         'backgroundColor': 'transparent',
@@ -78,28 +88,55 @@
         'legend': { 'textStyle': { 'color': '#A0A0A0' } },
         'dataZoom': { 'backgroundColor': 'rgba(17,17,17,0)', 'borderColor': '#444444', 'textStyle': { 'color': '#A0A0A0' } }
       });
-      function render() {
-        document.querySelectorAll('.echarts').forEach(function (el) {
-          try {
-            var cfg = JSON.parse(el.textContent.trim());
-            var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'mono-dark' : 'mono';
-            var chart = echarts.init(el, theme);
-            chart.setOption(cfg);
-            el._chart = chart;
-            new ResizeObserver(function () { chart.resize(); }).observe(el);
-          } catch (e) {}
-        });
-      }
+    }
+
+    function render() {
+      document.querySelectorAll('.echarts').forEach(function (el) {
+        if (el._chart) return; // 已初始化
+        try {
+          var cfg = JSON.parse(el.textContent.trim());
+          var theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'mono-dark' : 'mono';
+          var chart = echarts.init(el, theme);
+          chart.setOption(cfg);
+          el._chart = chart;
+          new ResizeObserver(function () { chart.resize(); }).observe(el);
+        } catch (e) {}
+      });
+    }
+
+    if (echartsLoaded) { render(true); return; }
+    echartsLoaded = true;
+    function onLoaded() {
+      if (typeof echarts === 'undefined') return;
+      register();
       render();
-      // 主题切换时重绘（simple 方案：销毁重建，mermaid 同理走 MutationObserver）
+      // 主题切换时重绘
       new MutationObserver(function () {
         document.querySelectorAll('.echarts').forEach(function (el) {
           if (el._chart) { el._chart.dispose(); el._chart = null; }
         });
         render();
       }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    });
+    }
+    loadScript(ECHARTS_CDN, onLoaded);
   }
+
+  // ---------- 统一入口：首屏 + SPA 路由 ——
+  function wrapContent() {
+    initMicroLighter();
+    initMermaid();
+    initEcharts();
+  }
+
+  window.__monoWrapContent = wrapContent;
+
+  // 首屏
+  wrapContent();
+
+  // SPA 路由切换后重跑（mermaid/echarts 只渲染新出现但未初始化的块；micro-lighter 包装新 pre>code）
+  document.addEventListener('mono:routechange', function () {
+    wrapContent();
+  });
 
   // ---------- helpers ----------
   function loadScript(url, cb) {
@@ -107,7 +144,7 @@
     s.src = url;
     s.async = true;
     s.onload = cb;
-    s.onerror = cb;
+    s.onerror = function () { cb(); }; // 与原先一致：失败也回调（内部有 typeof 检查）
     document.head.appendChild(s);
   }
 
