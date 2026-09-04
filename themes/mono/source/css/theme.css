@@ -196,6 +196,49 @@ img { max-width: 100%; height: auto; }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--color-text); }
 
+/* --- Home About（个人展示区）--- */
+.home-about {
+  max-width: var(--content-width);
+  margin: 0 auto 2.5rem;
+  min-height: 32vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+.home-about-inner {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4rem;
+}
+/* about 三行样式（首页与 /about 页共用） */
+.about-identity {
+  font-family: var(--font-serif);
+  font-size: 2.4rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+}
+.about-role {
+  font-size: 1.02rem;
+  color: var(--color-text-secondary);
+}
+.about-note {
+  font-size: 0.9rem;
+  color: var(--color-text-tertiary);
+}
+/* /about 页面：整个内容区垂直居中 */
+.page-about {
+  width: 100%;
+  min-height: calc(100vh - var(--header-height) - 5rem);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
 /* --- Post List --- */
 .post-list { display: flex; flex-direction: column; gap: 1.1rem; max-width: var(--content-width); margin: 0 auto; }
 
@@ -574,7 +617,7 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
   .site-nav .nav-link { padding: 0.6rem 0.7rem; font-size: 0.93rem; color: var(--color-text); border-radius: var(--radius); transition: background-color 0.15s, color 0.15s; }
   .site-nav .nav-link:hover, .site-nav .nav-link:active { background-color: var(--color-surface-hover); color: var(--color-accent); }
 
-  .site-nav .icon-btn { margin: 0.1rem 0 0; padding: 0.6rem 0.7rem; align-self: stretch; justify-content: flex-start; border-radius: var(--radius); color: var(--color-text-secondary); gap: 0.5rem; }
+  .site-nav .icon-btn { margin: 0.1rem 0 0; padding: 0.6rem 0.7rem; align-self: stretch; justify-content: center; border-radius: var(--radius); color: var(--color-text-secondary); gap: 0.5rem; }
   .site-nav .icon-btn:hover { background-color: var(--color-surface-hover); color: var(--color-accent); }
 
   .post-title { font-size: 1.45rem; }

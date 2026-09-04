@@ -1,3 +1,15 @@
+<%# 首页 = 个人展示页：上方 about 内容垂直居中，下方文章列表 %>
+<%
+var aboutPage = null;
+site.pages.each(function(p){ if (p.source === 'about/index.md') aboutPage = p; });
+%>
+<section class="home-about">
+  <div class="home-about-inner">
+    <% if (aboutPage) { %>
+      <%- aboutPage.content %>
+    <% } %>
+  </div>
+</section>
 <div class="post-list">
   <% page.posts.each(function(post){ %>
     <%- partial('partial/post-card', {post: post}) %>

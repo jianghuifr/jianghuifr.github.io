@@ -2,7 +2,11 @@
   <div class="header-inner">
     <a class="site-title" href="<%- url_for('/') %>"><%= config.title %></a>
     <button class="nav-toggle" aria-label="打开导航" aria-expanded="false">
-      <morph-icon id="mi-nav" size="20" stroke-width="2" aria-hidden="true"></morph-icon>
+      <morph-icon id="mi-nav" size="20" stroke-width="2" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" style="width:20px;height:20px"/>
+        </svg>
+      </morph-icon>
     </button>
     <nav class="site-nav" id="site-nav">
       <% for (var name in theme.menu) { %>
@@ -14,7 +18,11 @@
         </svg>
       </button>
       <button class="icon-btn theme-toggle" type="button" aria-label="切换主题" title="切换主题">
-        <morph-icon id="mi-theme" size="18" stroke-width="2" aria-hidden="true"></morph-icon>
+        <morph-icon id="mi-theme" size="18" stroke-width="2" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" style="width:18px;height:18px"/>
+          </svg>
+        </morph-icon>
       </button>
     </nav>
   </div>

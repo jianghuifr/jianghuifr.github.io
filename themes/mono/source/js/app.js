@@ -22,10 +22,8 @@
         return true;
       })
       .catch(function () {
-        // CDN 不可用时降级：不留空图标区域（用 CSS 隐藏自定义元素容器）
-        document.querySelectorAll('morph-icon').forEach(function (el) {
-          el.style.display = 'none';
-        });
+        // CDN 不可用时降级：保留 header 里的内联 SVG 兜底图标，不隐藏。
+        morphReady = false;
       });
     return morphPromise;
   }
