@@ -8,12 +8,8 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-medium/result.css">
 
-  <% if (theme.math && theme.math.enable) { %>
-    <%- css('css/theme') %>
-    <%- css('css/math') %>
-  <% } else { %>
-    <%- css('css/theme') %>
-  <% } %>
+  <link rel="stylesheet" href="<%- url_for('/css/theme.css?v=4') %>">
+  <%# 手动 link：url_for 正确处理 query，避免 helper 拼错 %>
   <%# Inline to avoid FOUC. Storage key kept in sync with source/js/app.js %>
   <script>
     (function () {

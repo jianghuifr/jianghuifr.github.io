@@ -49,8 +49,8 @@
     </figure>
   </div>
 
-  <%- js('js/app') %>
-  <%- js('js/code') %>
+  <script src="<%- url_for('/js/app.js?v=4') %>"></script>
+  <script src="<%- url_for('/js/code.js?v=4') %>"></script>
   <% if (isHome) { %>
     <script>
       // 首页背景动效：Bubbles（带 lazy 加载 + 失败降级）
@@ -59,7 +59,7 @@
         coreUrl: '<%- url_for('/js/bubbles-core.js') %>'
       };
     </script>
-    <%- js('js/background') %>
+    <script src="<%- url_for('/js/background.js?v=4') %>"></script>
   <% } %>
 </body>
 </html>
