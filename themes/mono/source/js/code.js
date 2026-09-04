@@ -1,44 +1,15 @@
 // Mono code rendering:
-// 1. MicroLighter (<micro-lighter> element: copy button + line numbers on by default)
+// 1. 代码高亮走 Hexo 服务端 highlight.js（figure.highlight，无需前端）
 // 2. mermaid & echarts — lazy-loaded CDN, only when present on the page
 // 支持 SPA 路由（mono:routechange）重复初始化。
 (function () {
   'use strict';
 
-  var ML_CDN = 'https://cdn.jsdelivr.net/npm/microlighter@2.1.0/dist/micro-lighter-element.min.js';
   var MERMAID_CDN = 'https://cdn.jsdelivr.net/npm/mermaid@11.17.2/dist/mermaid.min.js';
   var ECHARTS_CDN = 'https://cdn.jsdelivr.net/npm/echarts@5.6.0/dist/echarts.min.js';
 
-  var mlLoaded = false;
   var mermaidLoaded = false;
   var echartsLoaded = false;
-
-  // ---------- MicroLighter ----------
-  function initMicroLighter() {
-    var hasCode = document.querySelector('pre > code');
-    if (!hasCode || !window.CSS || !CSS.highlights) return;
-
-    function wrapAll() {
-      document.querySelectorAll('pre > code').forEach(function (code) {
-        var pre = code.parentElement;
-        if (!pre || pre.closest('micro-lighter')) return;
-        var ml = document.createElement('micro-lighter');
-        ml.setAttribute('line-numbers', '');
-        ml.setAttribute('controls', 'copy');
-        pre.parentNode.insertBefore(ml, pre);
-        ml.appendChild(pre);
-      });
-    }
-
-    if (mlLoaded) { wrapAll(); return; }
-    mlLoaded = true; // 幂等：组件只需 define 一次
-    var s = document.createElement('script');
-    s.type = 'module';
-    s.src = ML_CDN;
-    s.onload = wrapAll;
-    s.onerror = function () { mlLoaded = false; };
-    document.head.appendChild(s);
-  }
 
   // ---------- mermaid ----------
   function initMermaid() {
@@ -104,13 +75,12 @@
       });
     }
 
-    if (echartsLoaded) { render(true); return; }
+    if (echartsLoaded) { render(); return; }
     echartsLoaded = true;
     function onLoaded() {
       if (typeof echarts === 'undefined') return;
       register();
       render();
-      // 主题切换时重绘
       new MutationObserver(function () {
         document.querySelectorAll('.echarts').forEach(function (el) {
           if (el._chart) { el._chart.dispose(); el._chart = null; }
@@ -123,17 +93,12 @@
 
   // ---------- 统一入口：首屏 + SPA 路由 ——
   function wrapContent() {
-    initMicroLighter();
     initMermaid();
     initEcharts();
   }
 
   window.__monoWrapContent = wrapContent;
-
-  // 首屏
   wrapContent();
-
-  // SPA 路由切换后重跑（mermaid/echarts 只渲染新出现但未初始化的块；micro-lighter 包装新 pre>code）
   document.addEventListener('mono:routechange', function () {
     wrapContent();
   });
@@ -144,7 +109,7 @@
     s.src = url;
     s.async = true;
     s.onload = cb;
-    s.onerror = function () { cb(); }; // 与原先一致：失败也回调（内部有 typeof 检查）
+    s.onerror = function () { cb(); };
     document.head.appendChild(s);
   }
 

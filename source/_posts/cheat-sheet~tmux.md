@@ -4,6 +4,8 @@ date: 2026-08-28 16:00:00
 tags:
   - cheat-sheet
   - tmux
+categories: [速查表]
+
 ---
 
 tmux 是终端复用器（terminal multiplexer）：一个终端里开多个会话 / 窗口 / 面板，断线重连后进程照跑。SSH 到服务器跑长任务、或本地想并行开几个终端时最常用。

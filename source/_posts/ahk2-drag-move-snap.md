@@ -4,6 +4,8 @@ date: 2026-08-03 20:25:00
 tags:
   - autohotkey
   - windows
+categories: [Windows 效率]
+
 ---
 
 不用瞄准标题栏，按住左键再按右键就能拖拽任意窗口。配合边缘吸附、Esc 取消、点击最大化——一个不到 60 行的 AHK v2 脚本，替代 AltDrag 的核心功能。

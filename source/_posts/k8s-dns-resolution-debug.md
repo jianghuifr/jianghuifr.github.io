@@ -6,6 +6,8 @@ tags:
   - dns
   - coredns
   - troubleshooting
+categories: [Kubernetes]
+
 ---
 
 一次真实的线上排查：集群内 Pod 偶发访问同可用区 RDS PostgreSQL 失败，报 DNS 解析错误。最终定位到 `ndots:5` 放大无效查询 → CoreDNS 上游限流 → SERVFAIL 的链条。

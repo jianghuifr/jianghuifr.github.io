@@ -1,16 +1,7 @@
-<div class="archive">
-  <h1 class="archive-title">归档</h1>
-  <% var lastYear = null; %>
-  <% page.posts.sort('-date').each(function(post){ %>
-    <% var year = date(post.date, 'YYYY'); %>
-    <% if (year !== lastYear) { %>
-      <h2 class="archive-year"><%= year %></h2>
-      <% lastYear = year; %>
-    <% } %>
-    <div class="archive-post">
-      <time class="archive-post-date" datetime="<%- date_xml(post.date) %>"><%- date(post.date, 'MM-DD') %></time>
-      <a class="archive-post-title" href="<%- url_for(post.path) %>"><%= post.title %></a>
-    </div>
+<%# /blog/ 博客文章列表（archive generator 产物，复用卡片流） %>
+<div class="post-list">
+  <% page.posts.each(function(post){ %>
+    <%- partial('partial/post-card', {post: post}) %>
   <% }) %>
 </div>
 <%- partial('partial/pagination') %>

@@ -4,6 +4,8 @@ date: 2024-01-01 00:00:00
 tags:
     - cheat-sheet
     - cpp
+categories: [速查表]
+
 ---
 
 - 获取、打印环境变量

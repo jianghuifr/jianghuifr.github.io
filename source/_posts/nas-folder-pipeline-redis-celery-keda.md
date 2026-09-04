@@ -7,6 +7,8 @@ tags:
   - keda
   - kubernetes
   - state-machine
+categories: [后端架构]
+
 ---
 
 ## 场景

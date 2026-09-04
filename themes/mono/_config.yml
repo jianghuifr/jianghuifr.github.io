@@ -3,9 +3,10 @@
 # Navigation menu
 menu:
   首页: /
-  归档: /archives
-  标签: /tags
-  相册: /album
+  博客: /blog
+  分类: /blog/categories
+  标签: /blog/tags
+  相册: /album/
 
 # Table of Contents (right sidebar on post pages)
 toc:

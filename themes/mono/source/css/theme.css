@@ -27,20 +27,27 @@
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.03);
   --shadow-card-hover: 0 3px 10px rgba(0, 0, 0, 0.07);
 
-  /* MicroLighter 语法配色 —— 黑白灰下的单一色彩强调 */
-  --syntax-comment: #8A8A8A;
-  --syntax-keyword: #8B5CF6;
-  --syntax-operator: #555555;
-  --syntax-string: #059669;
-  --syntax-constant: #0284C7;
-  --syntax-function: #D97706;
-  --syntax-type: #8B5CF6;
-  --syntax-variable: #0284C7;
-  --syntax-property: #0284C7;
-  --syntax-tag: #059669;
-  --syntax-selector: #8B5CF6;
-  --syntax-inserted: #059669;
-  --syntax-deleted: #DC2626;
+  /* 代码高亮语法配色（Hexo highlight.js token） */
+  --color-syntax-comment: #8A8A8A;
+  --color-syntax-keyword: #8B5CF6;
+  --color-syntax-operator: #555555;
+  --color-syntax-string: #059669;
+  --color-syntax-number: #0284C7;
+  --color-syntax-constant: #0284C7;
+  --color-syntax-function: #D97706;
+  --color-syntax-type: #8B5CF6;
+  --color-syntax-variable: #0284C7;
+  --color-syntax-property: #0284C7;
+  --color-syntax-attribute: #B8773A;
+  --color-syntax-regexp: #C06040;
+  --color-syntax-tag: #059669;
+  --color-syntax-selector: #8B5CF6;
+  --color-syntax-inserted: #059669;
+  --color-syntax-deleted: #DC2626;
+  --color-syntax-addition-text: #3C763D;
+  --color-syntax-addition-bg: rgba(5, 150, 105, 0.12);
+  --color-syntax-deletion-text: #DC2626;
+  --color-syntax-deletion-bg: rgba(220, 38, 38, 0.12);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -59,19 +66,19 @@
     --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
     --shadow-card-hover: 0 3px 10px rgba(0, 0, 0, 0.5);
 
-    --syntax-comment: #666666;
-    --syntax-keyword: #A78BFA;
-    --syntax-operator: #A0A0A0;
-    --syntax-string: #6EE7B7;
-    --syntax-constant: #67C7F0;
-    --syntax-function: #F0B868;
-    --syntax-type: #A78BFA;
-    --syntax-variable: #67C7F0;
-    --syntax-property: #67C7F0;
-    --syntax-tag: #6EE7B7;
-    --syntax-selector: #A78BFA;
-    --syntax-inserted: #6EE7B7;
-    --syntax-deleted: #F87171;
+    --color-syntax-comment: #666666;
+    --color-syntax-keyword: #A78BFA;
+    --color-syntax-operator: #A0A0A0;
+    --color-syntax-string: #6EE7B7;
+    --color-syntax-constant: #67C7F0;
+    --color-syntax-function: #F0B868;
+    --color-syntax-type: #A78BFA;
+    --color-syntax-variable: #67C7F0;
+    --color-syntax-property: #67C7F0;
+    --color-syntax-tag: #6EE7B7;
+    --color-syntax-selector: #A78BFA;
+    --color-syntax-inserted: #6EE7B7;
+    --color-syntax-deleted: #F87171;
 
     --color-border-2: #444444;
   }
@@ -92,19 +99,19 @@
   --shadow-card: 0 1px 2px rgba(0, 0, 0, 0.4);
   --shadow-card-hover: 0 3px 10px rgba(0, 0, 0, 0.5);
 
-  --syntax-comment: #666666;
-  --syntax-keyword: #A78BFA;
-  --syntax-operator: #A0A0A0;
-  --syntax-string: #6EE7B7;
-  --syntax-constant: #67C7F0;
-  --syntax-function: #F0B868;
-  --syntax-type: #A78BFA;
-  --syntax-variable: #67C7F0;
-  --syntax-property: #67C7F0;
-  --syntax-tag: #6EE7B7;
-  --syntax-selector: #A78BFA;
-  --syntax-inserted: #6EE7B7;
-  --syntax-deleted: #F87171;
+  --color-syntax-comment: #666666;
+  --color-syntax-keyword: #A78BFA;
+  --color-syntax-operator: #A0A0A0;
+  --color-syntax-string: #6EE7B7;
+  --color-syntax-constant: #67C7F0;
+  --color-syntax-function: #F0B868;
+  --color-syntax-type: #A78BFA;
+  --color-syntax-variable: #67C7F0;
+  --color-syntax-property: #67C7F0;
+  --color-syntax-tag: #6EE7B7;
+  --color-syntax-selector: #A78BFA;
+  --color-syntax-inserted: #6EE7B7;
+  --color-syntax-deleted: #F87171;
 
   --color-border-2: #444444;
 }
@@ -416,11 +423,8 @@ img { max-width: 100%; height: auto; }
   border-bottom: 1px dotted var(--color-text-tertiary);
 }
 
-/* --- MicroLighter code blocks：组件 grid 布局（行号 | 代码） --- */
-micro-lighter {
-  --syntax-background: var(--color-code-bg);
-  --syntax-foreground: var(--color-text);
-  display: grid;
+/* --- Hexo highlight.js code blocks (figure.highlight 服务端渲染) --- */
+figure.highlight {
   margin: 1.5em 0;
   font-family: var(--font-mono);
   font-size: 0.86rem;
@@ -429,64 +433,96 @@ micro-lighter {
   border-radius: var(--radius);
   overflow: hidden;
 }
-micro-lighter > pre {
+figure.highlight table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  margin: 0;
+}
+figure.highlight td {
+  padding: 0;
+  border: none;
+  vertical-align: top;
+}
+figure.highlight pre {
   margin: 0;
   padding: 0.9rem 1rem;
   overflow-x: auto;
   line-height: 1.6;
-  background: transparent;
-  border: none;
 }
-micro-lighter pre code,
-micro-lighter code {
-  font-family: var(--font-mono);
-  font-size: 0.86rem;
-  background: transparent;
-  padding: 0;
-}
-
-/* MicroLighter 组件行号/复制按钮 external part styling */
-micro-lighter::part(line-numbers) {
-  color: var(--color-text-tertiary);
-  font-family: var(--font-mono);
-  font-size: 0.78rem;
+figure.highlight .gutter {
+  width: 2.5em;
   user-select: none;
-  border-right: 1px solid var(--color-border-light);
-  padding: 0.9rem 0.7rem 0.9rem 0.9rem;
-  margin-right: 0;
-  text-align: right;
-  background: transparent;
-}
-micro-lighter::part(copy-button) {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
   color: var(--color-text-tertiary);
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
-  border-radius: 4px;
-  padding: 2px 8px;
-  cursor: pointer;
-  transition: color 0.15s, border-color 0.15s;
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
+  text-align: right;
+  border-right: 1px solid var(--color-border-light);
 }
-micro-lighter::part(copy-button):hover { color: var(--color-accent); border-color: var(--color-text-tertiary); }
-
-/* --- CSS Highlight API token colors（mono 语法配色） --- */
-::highlight(comment), ::highlight(quote) { color: var(--syntax-comment); font-style: italic; }
-::highlight(keyword), ::highlight(storage), ::highlight(at-rule), ::highlight(doctype), ::highlight(important), ::highlight(section) { color: var(--syntax-keyword); }
-::highlight(operator), ::highlight(punctuation) { color: var(--syntax-operator); }
-::highlight(string), ::highlight(regexp), ::highlight(attribute-value), ::highlight(link), ::highlight(raw) { color: var(--syntax-string); }
-::highlight(numeric), ::highlight(boolean), ::highlight(constant), ::highlight(symbol), ::highlight(character-entity) { color: var(--syntax-constant); }
-::highlight(function), ::highlight(decorator), ::highlight(animation) { color: var(--syntax-function); }
-::highlight(type), ::highlight(support) { color: var(--syntax-type); }
-::highlight(variable), ::highlight(interpolation) { color: var(--syntax-variable); }
-::highlight(property), ::highlight(key), ::highlight(attribute-name) { color: var(--syntax-property); }
-::highlight(tag) { color: var(--syntax-tag); }
-::highlight(selector) { color: var(--syntax-selector); }
-::highlight(inserted) { color: var(--syntax-inserted); }
-::highlight(deleted) { color: var(--syntax-deleted); }
+figure.highlight .gutter pre {
+  padding: 0.9rem 0.7rem;
+}
+figure.highlight .code pre {
+  padding: 0.9rem 1rem;
+  display: block;
+  max-width: 100%;
+  min-width: 0;
+}
+figure.highlight .code {
+  vertical-align: top;
+  width: 100%;
+  min-width: 0;
+}
+figure.highlight .line {
+  line-height: 1.6;
+  font-family: var(--font-mono);
+}
+figure.highlight .comment,
+figure.highlight .meta {
+  color: var(--color-syntax-comment);
+  font-style: italic;
+}
+figure.highlight .keyword,
+figure.highlight .selector-tag,
+figure.highlight .tag .name {
+  color: var(--color-syntax-keyword);
+}
+figure.highlight .string,
+figure.highlight .symbol,
+figure.highlight .bullet {
+  color: var(--color-syntax-string);
+}
+figure.highlight .number,
+figure.highlight .literal {
+  color: var(--color-syntax-number);
+}
+figure.highlight .title,
+figure.highlight .title.function_ {
+  color: var(--color-syntax-function);
+}
+figure.highlight .built_in,
+figure.highlight .type {
+  color: var(--color-syntax-type);
+}
+figure.highlight .attr,
+figure.highlight .attribute,
+figure.highlight .tag .attr {
+  color: var(--color-syntax-attribute);
+}
+figure.highlight .regexp,
+figure.highlight .link {
+  color: var(--color-syntax-regexp);
+}
+figure.highlight .selector-class,
+figure.highlight .selector-id {
+  color: var(--color-syntax-function);
+}
+figure.highlight .addition {
+  color: var(--color-syntax-addition-text);
+  background: var(--color-syntax-addition-bg);
+}
+figure.highlight .deletion {
+  color: var(--color-syntax-deletion-text);
+  background: var(--color-syntax-deletion-bg);
+}
 
 .post-content table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 0.93rem; }
 .post-content th, .post-content td { padding: 0.55em 1em; border: 1px solid var(--color-border); text-align: left; }
@@ -552,17 +588,10 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
 
 /* --- Static page --- */
 .page { max-width: var(--content-width); margin: 0 auto; }
-.page > h1:first-child, .page-title { font-family: var(--font-serif); font-size: 1.7rem; font-weight: 700; margin-bottom: 1.4rem; text-align: center; }
-.page-title span { color: var(--color-text-tertiary); font-size: 0.9em; }
+.page > h1:first-child { font-family: var(--font-serif); font-size: 1.7rem; font-weight: 700; margin-bottom: 1.4rem; text-align: center; }
 
-/* --- Archive --- */
+/* --- Archive（/blog 列表用 post-card，无年份标题样式）--- */
 .archive { max-width: var(--content-width); margin: 0 auto; }
-.archive-title { font-family: var(--font-serif); font-size: 1.6rem; font-weight: 700; margin-bottom: 1.6rem; text-align: center; }
-.archive-year { font-size: 1.05rem; font-weight: 600; color: var(--color-text-secondary); margin: 1.8rem 0 0.6rem; padding-bottom: 0.4rem; border-bottom: 1px solid var(--color-border-light); }
-.archive-post { display: flex; align-items: baseline; gap: 1rem; padding: 0.45rem 0; }
-.archive-post-date { font-size: 0.82rem; color: var(--color-text-tertiary); flex-shrink: 0; font-variant-numeric: tabular-nums; }
-.archive-post-title a { font-size: 0.98rem; color: var(--color-text); }
-.archive-post-title a:hover { color: var(--color-accent); }
 
 /* --- Tags cloud --- */
 .tag-cloud { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.55rem; margin-top: 1rem; }
@@ -594,6 +623,10 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
 /* --- Reading progress --- */
 .reading-progress { position: fixed; top: 0; left: 0; right: 0; height: 2px; z-index: 200; pointer-events: none; }
 .reading-progress-bar { display: block; width: 0; height: 100%; background: var(--color-accent); transition: width 0.08s linear; }
+/* 首页无滚动需求，隐藏进度条 */
+[data-noheader] .reading-progress {
+  display: none;
+}
 
 /* --- Back to top --- */
 .back-to-top {
@@ -687,6 +720,17 @@ micro-lighter::part(copy-button):hover { color: var(--color-accent); border-colo
 .lightbox-chart {
   background: rgba(255, 255, 255, 0.03);
   border-radius: var(--radius);
+}
+/* --- Mermaid 图 --- */
+.post-content pre.mermaid {
+  overflow-x: auto;
+  max-width: 100%;
+  margin: 1.5em 0;
+  text-align: center;
+}
+.post-content pre.mermaid svg {
+  max-width: 100%;
+  height: auto;
 }
 /* mermaid SVG 在灯箱里按 JS 算好的基准尺寸渲染，max 限制防止超视口 */
 .lightbox-stage svg.lightbox-media {

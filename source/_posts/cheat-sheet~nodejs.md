@@ -8,6 +8,8 @@ tags:
     - npm
     - pnpm
     - yarn
+categories: [速查表]
+
 ---
 
 ## 安装

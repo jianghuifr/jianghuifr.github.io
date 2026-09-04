@@ -2,6 +2,8 @@
 title: ECharts 示例
 date: 2026-07-30 23:30:00
 tags: [echarts]
+categories: [可视化]
+
 ---
 
 ## 柱状图

@@ -6,6 +6,8 @@ tags:
     - go
 photos:
     - /images/go.png
+categories: [速查表]
+
 ---
 
 ## 安装

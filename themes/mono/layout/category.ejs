@@ -1,5 +1,4 @@
 <div class="category-page">
-  <h1 class="page-title">分类：<span><%= page.category %></span></h1>
   <div class="post-list">
     <% page.posts.each(function(post){ %>
       <%- partial('partial/post-card', {post: post}) %>

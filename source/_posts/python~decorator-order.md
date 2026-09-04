@@ -5,6 +5,8 @@ tags:
     - python
 photos:
     - /images/python.png
+categories: [Python]
+
 ---
 
 ```python

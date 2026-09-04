@@ -5,6 +5,8 @@ tags:
   - autohotkey
   - windows
   - gdi
+categories: [Windows 效率]
+
 ---
 
 给窗口加一个"钉住"功能：按 Ctrl+Space 把当前窗口置顶，同时绘制一圈流动的彩虹边框做视觉标记。用 AutoHotkey v2 + GDI+ 实现，不需要依赖任何外部工具。

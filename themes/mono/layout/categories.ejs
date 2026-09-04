@@ -1,5 +1,4 @@
 <div class="categories-page">
-  <h1 class="page-title">分类</h1>
   <div class="category-list">
     <% site.categories.sort('name').each(function(cat){ %>
       <a class="category-list-item" href="<%- url_for(cat.path) %>">

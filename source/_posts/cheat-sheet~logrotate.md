@@ -3,6 +3,8 @@ title: logrotate
 date: 2024-01-01 00:00:00
 tags:
     - logrotate
+categories: [速查表]
+
 ---
 
 `logrotate`在常见的linux发行版都有安装，正如其名，是用于拆解日志文件的工具

@@ -164,7 +164,7 @@
     var targets = document.querySelectorAll(
       '.post-card, .post-title, .post-content h2, .post-content h3, ' +
       '.post-content img, .post-content table, .post-content blockquote, ' +
-      '.post-footer, .archive-post, .page-title, .tag-cloud-item'
+      '.post-footer, .archive-post, .tag-cloud-item'
     );
     if (!targets.length) return;
     function done(el) {

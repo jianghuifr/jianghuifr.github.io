@@ -6,6 +6,8 @@ tags:
   - gpu
   - dra
   - hami
+categories: [Kubernetes]
+
 ---
 
 DRA 不会取代 HAMi。两者是互补关系：DRA 接管「调度决策」，HAMi 保留「运行时执行」。分界线一句话说清——GPU 切片该分多少、分给谁，是 DRA 的活；分完之后容器里能不能真的卡住这个上限，是 HAMi 的活。

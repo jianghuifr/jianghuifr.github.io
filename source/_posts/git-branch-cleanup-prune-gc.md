@@ -4,6 +4,8 @@ date: 2026-07-30 10:45:00
 tags:
   - git
   - workflow
+categories: [工具链]
+
 ---
 
 在工作目录里执行 `git prune` 想清理分支，结果毫无反应——这是很多 Git 用户踩过的坑。`git prune` 不会删分支，它操作的对象层级完全不同。

@@ -5,6 +5,8 @@ tags:
   - kubernetes
   - filebeat
   - logging
+categories: [可观测性]
+
 ---
 
 ## 需求

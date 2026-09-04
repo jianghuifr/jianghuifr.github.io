@@ -1,5 +1,4 @@
 <div class="tag-page">
-  <h1 class="page-title">标签：<span><%= page.tag %></span></h1>
   <div class="post-list">
     <% page.posts.each(function(post){ %>
       <%- partial('partial/post-card', {post: post}) %>

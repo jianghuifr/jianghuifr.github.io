@@ -6,6 +6,8 @@ tags:
     - kubernetes
     - golang
     - devops
+categories: [容器]
+
 ---
 
 几种极小镜像的对比，做个备忘。

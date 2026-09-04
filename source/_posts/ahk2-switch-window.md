@@ -4,6 +4,8 @@ date: 2026-08-03 20:20:00
 tags:
   - autohotkey
   - windows
+categories: [Windows 效率]
+
 ---
 
 macOS 的 Cmd+` 在同一应用的不同窗口间切换，Windows 的 Alt+Tab 却把所有应用的窗口混在一起。用 AutoHotkey v2 补上这个缺口，核心逻辑不到 40 行。

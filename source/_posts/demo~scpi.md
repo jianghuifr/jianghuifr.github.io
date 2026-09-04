@@ -3,6 +3,8 @@ title: SCPI
 date: 2024-01-01 00:00:00
 tags:
      - demo
+categories: [嵌入式]
+
 ---
 
 ## 简介

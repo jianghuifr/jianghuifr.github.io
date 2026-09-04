@@ -5,6 +5,8 @@ tags:
   - kubernetes
   - prometheus
   - grafana
+categories: [可观测性]
+
 ---
 
 kube-prometheus-stack 部署的 Prometheus，`replicas: 2` 双副本，每个 Pod 各挂一块 PVC，汰换周期 14d。某天把单副本改成双副本，新盘三天前才建。之后 Grafana 查询开始随机命中两块盘，出现「一会儿有数据一会儿没数据」，刷新几次结果在两者间跳动。

@@ -4,6 +4,8 @@ date: 2026-08-28 15:00:00
 tags:
   - git
   - workflow
+categories: [工具链]
+
 ---
 
 核心一句话：`git worktree` 让同一个仓库同时挂多个工作目录，每个目录独占一个分支，共享同一份 commit 历史和对象库。开发到一半要切去修线上 bug，不用 stash、不用来回 `git checkout`，直接开个新目录就行。

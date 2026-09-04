@@ -8,6 +8,8 @@ tags:
   - prometheus
   - kueue
   - volcano
+categories: [Kubernetes]
+
 ---
 
 ## 背景

@@ -5,6 +5,8 @@ tags:
   - claude-code
   - bash
   - tools
+categories: [AI 工程]
+
 ---
 
 给 Claude Code 配置多个后端（OpenAI、Anthropic、Gemini 等）之后，每次切换都要手动指定 `--settings` 路径——麻烦而且容易搞混 API key。这个脚本用"文件系统约定替代硬编码配置"的思路，把多后端管理压缩成一个 `cc` 命令。
