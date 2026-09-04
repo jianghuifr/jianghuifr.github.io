@@ -51,7 +51,7 @@ export function initBubbles(container, options) {
         float pox =      sin(float(i)*321.55+4.1) * uResolution.x / uResolution.y;
 
         float rad = (0.1 + 0.5*siz) * uScale;
-        vec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.1*uTime*(0.2+0.8*siz),1.0));
+        vec2  pos = vec2( pox, -1.0-rad + (2.0+2.0*rad)*mod(pha+0.045*uTime*(0.2+0.8*siz),1.0));
         float dis = length( uv - pos );
         // 柔和蓝橙双色（参考原版 4dl3zn 的配色思路：低饱和、雾状融入）
         // 浅色模式用稍弱的粉彩，深色模式用稍亮的余晖色

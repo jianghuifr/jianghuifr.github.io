@@ -254,9 +254,6 @@ img { max-width: 100%; height: auto; }
     text-shadow: 0 0 18px var(--color-bg), 0 0 6px var(--color-bg), 0 0 2px var(--color-bg);
   }
 }
-[data-noheader] .about-entry {
-  box-shadow: 0 0 14px var(--color-bg);
-}
 .home-about {
   width: 100%;
   max-width: var(--content-width);
@@ -290,25 +287,36 @@ img { max-width: 100%; height: auto; }
   font-size: 0.9rem;
   color: var(--color-text-tertiary);
 }
-/* 「查看笔记」入口按钮 */
-.about-entry {
+/* 首页小图标并排（笔记 / 相册 / GitHub） */
+.about-icons {
   margin-top: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.8rem;
+}
+.about-icon {
+  width: 42px;
+  height: 42px;
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
-  padding: 0.45rem 1.1rem;
-  font-size: 0.88rem;
+  justify-content: center;
   color: var(--color-text);
   border: 1px solid var(--color-border-2, #CCCCCC);
-  border-radius: 99px;
+  border-radius: 50%;
   background: var(--color-surface);
   transition: color 0.15s, border-color 0.15s, background 0.15s, transform 0.15s;
 }
-.about-entry:hover {
+.about-icon svg {
+  width: 20px;
+  height: 20px;
+  display: block;
+}
+.about-icon:hover {
   color: var(--color-accent);
   border-color: var(--color-accent);
   background: var(--color-surface-hover);
-  transform: translateY(-1px);
+  transform: translateY(-2px);
 }
 
 /* --- Post List --- */
