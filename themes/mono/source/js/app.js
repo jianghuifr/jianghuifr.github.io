@@ -530,18 +530,28 @@
   })();
 
   // ---------- menu scope（博客区/相册区导航过滤）----------
-  // 规则：/blog* → 只显示 blog scope；/album* → 只显示 album scope；
-  //       其余（首页 personal）→ site scope。回首页点 logo。
-  function applyMenuScope() {
-    var path = location.pathname;
+  // 规则：/blog* → 只显示 blog scope（博客/分类/标签）；/album* → 相册页无菜单栏（隐藏全部导航）；
+  //       其余（首页 personal）→ site scope。回首页点 logo。主题切换在全局右上角（不属菜单）。
+  // routechange 事件带 detail.url（SPA 时 pushState 晚于事件派发，用事件 URL 判定）
+  function applyMenuScope(ev) {
+    var raw = (ev && ev.detail && ev.detail.url) || location.href;
+    var path;
+    try { path = new URL(raw, location.href).pathname; } catch (e) { path = location.pathname; }
     var scope;
     if (path.indexOf('/blog') === 0) scope = 'blog';
     else if (path.indexOf('/album') === 0) scope = 'album';
     else scope = 'site';
-    // 先全部隐藏，再点亮匹配 scope 的链接（保留搜索/主题按钮不参与 scope）
+    // 先全部隐藏，再点亮匹配 scope 的链接
     document.querySelectorAll('.nav-link[data-scope]').forEach(function (a) {
       a.style.display = (a.getAttribute('data-scope') === scope) ? '' : 'none';
     });
+    // 相册页：隐藏整个菜单栏（导航链接 + 搜索按钮；用户要求相册页无菜单栏）
+    var nav = document.getElementById('site-nav');
+    if (nav) {
+      nav.classList.toggle('menu-hidden', scope === 'album');
+      var search = nav.querySelector('.search-toggle');
+      if (search) search.style.display = (scope === 'album') ? 'none' : '';
+    }
   }
   applyMenuScope();
   document.addEventListener('mono:routechange', applyMenuScope);

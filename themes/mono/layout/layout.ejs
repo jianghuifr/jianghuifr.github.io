@@ -3,6 +3,14 @@
 <%- partial('partial/head') %>
 <% var isHome = (page.path === 'index.html' || page.path === ''); %>
 <body<%= isHome ? ' data-noheader' : '' %>>
+  <%# 全局主题切换（右上角浮动，所有页面可用，不随菜单分区隐藏） %>
+  <button class="theme-toggle global-theme" type="button" aria-label="切换主题" title="切换主题">
+    <morph-icon id="mi-theme" size="18" stroke-width="2" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" style="width:18px;height:18px"/>
+      </svg>
+    </morph-icon>
+  </button>
   <div class="reading-progress" aria-hidden="true">
     <div class="reading-progress-bar" id="reading-progress-bar"></div>
   </div>
@@ -46,7 +54,7 @@
     // 供 SPA 路由使用（首页状态，控制 header/footer 显隐）
     window.__MONO_BG = { isHome: <%= isHome ? 'true' : 'false' %> };
   </script>
-  <script src="<%- url_for('/js/app.js?v=12') %>"></script>
-  <script src="<%- url_for('/js/code.js?v=12') %>"></script>
+  <script src="<%- url_for('/js/app.js?v=13') %>"></script>
+  <script src="<%- url_for('/js/code.js?v=13') %>"></script>
 </body>
 </html>
