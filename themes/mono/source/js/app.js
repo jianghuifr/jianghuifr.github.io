@@ -81,7 +81,7 @@
     // morph 到对应图标
     if (morphReady && morphIcons.icons.sun && morphIcons.icons.moon) {
       var themeEl = document.getElementById('mi-theme');
-      if (themeEl && themeEl.morphTo) themeEl.morphTo(isDark ? morphIcons.icons.moon : morphIcons.icons.sun, 'snappy');
+      if (themeEl && themeEl.morphTo) themeEl.morphTo(isDark ? morphIcons.icons.moon : morphIcons.icons.sun, 'smooth');
     }
   }
 
