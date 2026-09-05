@@ -541,16 +541,18 @@
     if (path.indexOf('/blog') === 0) scope = 'blog';
     else if (path.indexOf('/album') === 0) scope = 'album';
     else scope = 'site';
-    // 先全部隐藏，再点亮匹配 scope 的链接
+    // 先全部隐藏，再点亮匹配 scope 的链接；相册页连相册链接也隐藏
     document.querySelectorAll('.nav-link[data-scope]').forEach(function (a) {
-      a.style.display = (a.getAttribute('data-scope') === scope) ? '' : 'none';
+      var show = (scope !== 'album') && (a.getAttribute('data-scope') === scope);
+      a.style.display = show ? '' : 'none';
     });
-    // 相册页：隐藏整个菜单栏（导航链接 + 搜索按钮；用户要求相册页无菜单栏）
+    // 搜索/主题按钮：相册页隐藏搜索、保留主题切换（菜单栏不可为空）
     var nav = document.getElementById('site-nav');
     if (nav) {
-      nav.classList.toggle('menu-hidden', scope === 'album');
       var search = nav.querySelector('.search-toggle');
       if (search) search.style.display = (scope === 'album') ? 'none' : '';
+      var theme = nav.querySelector('.theme-toggle');
+      if (theme) theme.style.display = '';
     }
   }
   applyMenuScope();

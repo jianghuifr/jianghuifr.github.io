@@ -190,11 +190,6 @@ img { max-width: 100%; height: auto; }
 }
 .nav-link:hover { color: var(--color-accent); }
 
-/* 相册页：整个菜单栏隐藏（scope=album 时由 JS 加 .menu-hidden） */
-.site-nav.menu-hidden {
-  display: none !important;
-}
-
 .icon-btn {
   background: none;
   border: none;
