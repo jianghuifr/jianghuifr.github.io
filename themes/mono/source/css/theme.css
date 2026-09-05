@@ -190,25 +190,10 @@ img { max-width: 100%; height: auto; }
 }
 .nav-link:hover { color: var(--color-accent); }
 
-/* 全局浮动主题切换（右上角，所有页面常驻，不随菜单分区隐藏） */
-.global-theme {
-  position: fixed;
-  top: 1.25rem;
-  right: 1.25rem;
-  z-index: 210;
-  background: var(--color-surface);
-  border: 1px solid var(--color-border-light);
-  border-radius: 50%;
-  box-shadow: var(--shadow-card);
-}
-.global-theme:hover {
-  background: var(--color-surface-hover);
-  color: var(--color-text);
-}
 /* 相册页：整个菜单栏隐藏（scope=album 时由 JS 加 .menu-hidden） */
 .site-nav.menu-hidden {
   display: none !important;
-}/* 首页无 header：右上角被导航/按钮占用，偏移到右上角内侧即可（默认位置即可） */
+}
 
 .icon-btn {
   background: none;
