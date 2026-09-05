@@ -9,8 +9,8 @@
       </morph-icon>
     </button>
     <nav class="site-nav" id="site-nav">
-      <% for (var name in theme.menu) { %>
-        <a class="nav-link" href="<%- url_for(theme.menu[name]) %>"><%= name %></a>
+      <% for (var name in theme.menu) { var item = theme.menu[name]; %>
+        <a class="nav-link" href="<%- url_for(item.url || item) %>" data-scope="<%= item.scope || (item.url ? '' : 'site') %>"><%= name %></a>
       <% } %>
       <button class="icon-btn search-toggle" type="button" aria-label="搜索" title="搜索 (Ctrl/Cmd+K)">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

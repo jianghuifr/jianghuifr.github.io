@@ -111,7 +111,8 @@
       nav.classList.contains('open') ? close() : open();
     });
     nav.addEventListener('click', function (e) {
-      if (e.target.closest('.nav-link')) close();
+      // 点击导航链接、搜索按钮、主题切换按钮都自动收起菜单
+      if (e.target.closest('.nav-link') || e.target.closest('.search-toggle') || e.target.closest('.theme-toggle')) close();
     });
     overlay.addEventListener('click', close);
     window.addEventListener('scroll', function () {
@@ -527,6 +528,23 @@
       }
     });
   })();
+
+  // ---------- menu scope（博客区/相册区导航过滤）----------
+  // 规则：/blog* → 只显示 blog scope；/album* → 只显示 album scope；
+  //       其余（首页 personal）→ site scope。回首页点 logo。
+  function applyMenuScope() {
+    var path = location.pathname;
+    var scope;
+    if (path.indexOf('/blog') === 0) scope = 'blog';
+    else if (path.indexOf('/album') === 0) scope = 'album';
+    else scope = 'site';
+    // 先全部隐藏，再点亮匹配 scope 的链接（保留搜索/主题按钮不参与 scope）
+    document.querySelectorAll('.nav-link[data-scope]').forEach(function (a) {
+      a.style.display = (a.getAttribute('data-scope') === scope) ? '' : 'none';
+    });
+  }
+  applyMenuScope();
+  document.addEventListener('mono:routechange', applyMenuScope);
 
   // ---------- SPA router ----------
   // 站内导航用 fetch + DOMParser 替换 main-content（不整页跳转）：
