@@ -102,7 +102,3 @@ while True:
 Gang Scheduling 场景要更谨慎。Kueue 只保证"所有 Pod 同时被准入"，不保证"同时被调度到节点"。分布式训练如果部分 worker 起不来就等于全废，此时更合适的是 Volcano——它直接接管 kube-scheduler，用 `PodGroup` 保证一整个作业的 Pod 一次性落到节点。业界也有 Kueue 管配额、Volcano 管调度的组合玩法。
 
 选型不是比谁功能强，而是看当前架构和真实痛点。已经有外部 scheduler + 只跑批处理的场景，Prometheus + ResourceQuota + LimitRange 三层能兜底大部分问题，成本远低于引入 Kueue 或 Volcano。等到 Gang Scheduling、多集群、公平共享真正成为刚需再切也不晚。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：<https://chat.deepseek.com/share/ej41zd012dxyr96z7a>

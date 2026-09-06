@@ -161,7 +161,3 @@ kubectl exec <pod> -- cat /etc/resolv.conf
 | 4 | `dmesg \| grep conntrack` | 排除内核丢包 |
 | 5 | CoreDNS Prometheus 指标 | 看 SERVFAIL / 超时趋势 |
 | 6 | `kubectl logs -n kube-system -l k8s-app=kube-dns` | 看上游 DNS 返回了什么 |
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/wv7takou7bv463ufah

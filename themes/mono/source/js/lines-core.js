@@ -20,7 +20,7 @@ export function initLines(container, options) {
   var uniforms = {
     uTime:       { value: 0 },
     uResolution: { value: new THREE.Vector2(window.innerWidth, window.innerHeight) },
-    uSpeed:      { value: 0.8 } // 慢速，背景感
+    uSpeed:      { value: 0.35 } // 慢速，背景感
   };
 
   var vertexShader = `
@@ -45,10 +45,12 @@ export function initLines(container, options) {
 
     void main() {
       vec2 uv = (gl_FragCoord.xy - .5 * uResolution.xy) / uResolution.y;
-      vec4 O = vec4 (0.);
+      // 背景渐变（全屏覆盖，深色 → 略暖过渡），避免上下空白
+      vec4 bg = vec4(0.035 + 0.01 * uv.y, 0.030 + 0.008 * uv.y, 0.040 + 0.010 * uv.y, 1.0);
+      vec4 O = bg;
       for (float i = 0.; i <= 5.; i += 1.) {
         float t = i / 5.;
-        O += Line(uv, 0.8 + t * 0.5, 4. + t, vec3(.2 + t * .7, .2 + t * .4, 0.3 + t * 0.3));
+        O += Line(uv, 0.45 + t * 0.35, 4. + t, vec3(.2 + t * .7, .2 + t * .4, 0.3 + t * 0.3));
       }
       gl_FragColor = O;
     }

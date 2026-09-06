@@ -110,7 +110,3 @@ condition:
 ## 顺带一提：为什么不用 processors.drop_event
 
 `drop_event` 是"采完再丢"的路径——Filebeat 会先把日志读进来、组装成事件，然后丢弃。性能远不如 autodiscover condition 在 input 层就不生成。只有当过滤条件依赖 **日志内容本身** 而非 Pod 元数据时（例如 body 里的某个 JSON 字段），才用 `drop_event`。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：<https://chat.deepseek.com/share/le7wetm4k0h8808le9>

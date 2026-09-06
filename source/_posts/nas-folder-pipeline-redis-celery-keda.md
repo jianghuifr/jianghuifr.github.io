@@ -275,7 +275,3 @@ flowchart LR
 ```
 
 Scanner 是单副本可以接受——挂掉最多延迟 1 分钟发现新目录，业务侧完全无感。Redis 才是唯一硬依赖，生产用 Sentinel 或 Cluster 兜底。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/jgv2c4f431g49hjyp4

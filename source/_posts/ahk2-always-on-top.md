@@ -91,7 +91,3 @@ WinSetTransparent(alpha, g.Hwnd)
 | 蓝屏风险 | 无 | 非零 |
 
 GDI+ 画 4 个小矩形（边长 ≤ 2000px），每 50ms 一帧，CPU 单核占用 <1%。D3D Hook 需要在游戏渲染循环的每一帧插入绘制，144Hz 就是每秒 144 次 GPU 操作——工程复杂度翻 3 倍，收益几乎为零。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/fwgdrmb324yc1xa0v4

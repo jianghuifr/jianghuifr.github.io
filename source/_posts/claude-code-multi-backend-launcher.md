@@ -111,7 +111,3 @@ draw_menu() {
 **不检查 settings JSON 有效性**。脚本只检查文件是否存在，不解析 JSON 内容。理由是 Claude Code 启动时自己会校验并给出清晰的报错，在入口脚本里重复校验只会增加维护负担。
 
 **用 exec 而不是 fork+wait**。`launch()` 里直接 `exec`，意味着 bash 进程被 Claude Code 替换。好处是不残留一个无用的 bash 父进程；坏处是启动后无法在脚本里做后续处理。对于入口脚本来说这是正确的取舍——启动后本来也不需要再做什么。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/fsssyz20rj8k0fsnno

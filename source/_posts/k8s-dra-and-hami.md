@@ -61,7 +61,3 @@ HAMi 没有躺平等死，而是主动把调度能力让渡给 DRA：
 - **两种模式不能同集群并存**。传统 Device Plugin 和 DRA 同时跑，两个调度器会互相争夺 GPU，直接乱套。
 - **`DRAConsumableCapacity`**（允许分片共享的特性）在 v1.36 仍是 Beta，未 Stable。
 - **HAMi-DRA 不做拓扑感知调度**（如 NVLink 亲和性），多卡通信密集的场景可能掉性能。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：<https://chat.deepseek.com/share/2pzf7an3e1a5seuxhd>

@@ -127,7 +127,3 @@ git config --global alias.cleanup '!git branch --merged | grep -v "\*" | grep -v
 ## 为什么 `git remote prune` 不能自动删本地分支
 
 很多人以为 `git remote prune` 删了远程引用后，对应的本地分支也会自动消失——不会。`git remote prune` 只操作 `refs/remotes/origin/*` 这个命名空间，本地分支在 `refs/heads/*` 下，互不干涉。这是 Git 的安全策略：远程分支可以随时消失，但本地的改动永远是受保护的。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/4vt793akmoytw5n15g

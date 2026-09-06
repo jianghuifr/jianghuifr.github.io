@@ -219,6 +219,16 @@ img { max-width: 100%; height: auto; }
 [data-noheader] {
   height: 100vh;
   overflow: hidden;
+  /* 首页强制暗色渲染（不受深浅色切换影响；WebGL 背景是暗色系） */
+  --color-bg: #0d0e12;
+  --color-surface: #1B1B1B;
+  --color-surface-hover: #242424;
+  --color-text: #EDEDED;
+  --color-text-secondary: #A0A0A0;
+  --color-text-tertiary: #666666;
+  --color-accent: #FFFFFF;
+  --color-border: #2E2E2E;
+  --color-border-light: #262626;
 }
 [data-noheader] .site-wrapper {
   height: 100%;
@@ -312,18 +322,21 @@ img { max-width: 100%; height: auto; }
   color: var(--color-text);
   border-radius: 8px;
   cursor: pointer;
-  transition: none; /* 覆盖全局 a 的 color transition：完全无动效 */
+  /* hover 动效：上浮 + 微放大 + 颜色点亮 + 柔和投影（克制） */
+  transition:
+    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 0.22s ease,
+    filter 0.22s ease;
 }
 .about-icon svg {
   width: 21px;
   height: 21px;
   display: block;
 }
-/* hover 无动效无背景，仅手型光标（a 标签默认 pointer，这里显式声明） */
 .about-icon:hover {
-  color: var(--color-text);
-  background: none;
-  transform: none;
+  color: var(--color-accent);
+  transform: translateY(-3px) scale(1.12);
+  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
 }
 
 /* --- Post List --- */
@@ -416,11 +429,10 @@ img { max-width: 100%; height: auto; }
 .post-content code {
   font-family: var(--font-mono);
   font-size: 0.88em;
-  background: none;
-  padding: 0;
-  border-radius: 0;
+  background: var(--color-surface-hover);
+  padding: 0.12em 0.38em;
+  border-radius: 3px;
   color: var(--color-text);
-  border-bottom: 1px dotted var(--color-text-tertiary);
 }
 
 /* --- Hexo highlight.js code blocks (figure.highlight 服务端渲染) --- */

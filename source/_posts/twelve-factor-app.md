@@ -85,7 +85,3 @@ Session 放 Redis，文件放 S3/MinIO，数据库连接走连接池。
 ## XII. 管理进程
 
 数据库迁移、一次性脚本作为独立进程运行，和主应用共享代码和环境。K8s 里用 Job 或 `kubectl run --rm -it` 执行。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/ejhuoo2wiqzej5su03

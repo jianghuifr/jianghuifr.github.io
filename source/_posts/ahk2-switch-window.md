@@ -83,7 +83,3 @@ if !GetKeyState("LWin", "P") {
 - `ShowToolTip` 需要自行实现——用 ToolTip 或 Gui 弹窗显示窗口列表并在当前选中项上高亮
 
 比 Alt+Tab 精准：只切 Chrome 就看 Chrome 的窗口，只切 VS Code 就看 VS Code 的窗口，不受其他应用干扰。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/fwgdrmb324yc1xa0v4

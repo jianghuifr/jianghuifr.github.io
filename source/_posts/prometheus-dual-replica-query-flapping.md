@@ -16,8 +16,8 @@ kube-prometheus-stack 部署的 Prometheus，`replicas: 2` 双副本，每个 Po
 ```mermaid
 flowchart LR
     G[Grafana] -->|修改前<br/>负载均衡| SVC[Service]
-    SVC --> P0["prometheus-<release>-0<br/>旧盘 PVC"]
-    SVC --> P1["prometheus-<release>-1<br/>新盘 PVC<br/>3 天前建，缺历史"]
+    SVC --> P0["prometheus-&lt;release&gt;-0<br/>旧盘 PVC"]
+    SVC --> P1["prometheus-&lt;release&gt;-1<br/>新盘 PVC<br/>3 天前建，缺历史"]
     G -.->|修改后<br/>Headless 直连| P0
 ```
 
@@ -121,7 +121,3 @@ Grafana 里 Save & Test 通过即生效。
 - sidecar 数据源由 ConfigMap 管理，改完自动 reload（~30s），不用重启 Grafana。
 - `no such host` 基本都是 Pod 名或 Service 名拼错，不是网络问题——先 `kubectl get pods/svc` 核对真实名字。
 - 用 PVC 创建时间而非 Pod AGE 判断哪块是旧盘。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：<https://chat.deepseek.com/share/4l0i190ue119bodqch>

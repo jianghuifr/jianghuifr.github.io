@@ -129,7 +129,3 @@ if moved {
 ```
 
 拖拽到屏幕边缘 20px 范围内自动吸过去。四条边独立判断——同时靠近左边缘和上边缘就会吸附到左上角。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/fwgdrmb324yc1xa0v4

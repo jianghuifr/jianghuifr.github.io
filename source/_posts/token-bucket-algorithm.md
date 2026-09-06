@@ -79,7 +79,3 @@ class TokenBucket:
 - 下游保护：防止瞬时流量冲垮后端服务。
 
 分布式场景单机令牌桶不够用，需要共享计数（如 Redis + Lua 原子操作），以及考虑令牌发放的全局一致性。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：<https://chat.deepseek.com/share/w7rfxt1qreofqds7yp>
