@@ -3,6 +3,10 @@
 <%- partial('partial/head') %>
 <% var isHome = (page.path === 'index.html' || page.path === ''); %>
 <body<%= isHome ? ' data-noheader' : '' %>>
+  <%# 首页背景：Six Lines 波浪（仅 data-noheader 页面显示 canvas） %>
+  <div class="home-bg" id="home-bg" aria-hidden="true">
+    <div id="bg-lines"></div>
+  </div>
   <div class="reading-progress" aria-hidden="true">
     <div class="reading-progress-bar" id="reading-progress-bar"></div>
   </div>
@@ -44,9 +48,14 @@
 
   <script>
     // 供 SPA 路由使用（首页状态，控制 header/footer 显隐）
-    window.__MONO_BG = { isHome: <%= isHome ? 'true' : 'false' %> };
+    window.__MONO_BG = {
+      isHome: <%= isHome ? 'true' : 'false' %>,
+      linesUrl: '<%- url_for('/js/lines-core.js') %>',
+      threeUrl: '<%- url_for('/vendor/three.module.js') %>'
+    };
   </script>
-  <script src="<%- url_for('/js/app.js?v=17') %>"></script>
-  <script src="<%- url_for('/js/code.js?v=17') %>"></script>
+  <script src="<%- url_for('/js/app.js?v=18') %>"></script>
+  <script src="<%- url_for('/js/background.js?v=18') %>"></script>
+  <script src="<%- url_for('/js/code.js?v=18') %>"></script>
 </body>
 </html>
