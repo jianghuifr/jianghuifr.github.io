@@ -209,6 +209,10 @@ img { max-width: 100%; height: auto; }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; padding: 6px; color: var(--color-text); }
 .nav-toggle morph-icon > svg { width: 20px; height: 20px; display: block; }
+/* 顶部菜单按钮：点击转一圈（移动端无 hover，用 :active 触发，与首页图标一致） */
+.nav-toggle:active morph-icon > svg {
+  animation: icon-spin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
 
 /* --- Home About（个人展示区）：首页全屏垂直居中 --- */
 /* 首页裸布局（body[data-noheader]）：header/footer 由 CSS 隐藏（SPA 切换友好） */
@@ -322,21 +326,30 @@ img { max-width: 100%; height: auto; }
   color: var(--color-text);
   border-radius: 8px;
   cursor: pointer;
-  /* hover 动效：上浮 + 微放大 + 颜色点亮 + 柔和投影（克制） */
-  transition:
-    transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
-    color 0.22s ease,
-    filter 0.22s ease;
+  /* hover/active 动效：图标转一圈 + 颜色点亮（与主题切换按钮 spring 手感一致） */
+  transition: color 0.22s ease;
 }
 .about-icon svg {
   width: 21px;
   height: 21px;
   display: block;
 }
-.about-icon:hover {
+.about-icon:hover,
+.about-icon:active {
   color: var(--color-accent);
-  transform: translateY(-3px) scale(1.12);
-  filter: drop-shadow(0 6px 14px rgba(0, 0, 0, 0.35));
+}
+.about-icon:hover svg,
+.about-icon:active svg {
+  animation: icon-spin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes icon-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+/* JS 点击触发（移动端）复用同一动画 */
+.about-icon svg.icon-spin,
+.nav-toggle morph-icon > svg.icon-spin {
+  animation: icon-spin 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 /* --- Post List --- */

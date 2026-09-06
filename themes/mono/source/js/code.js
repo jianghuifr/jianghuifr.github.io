@@ -12,19 +12,66 @@
   var echartsLoaded = false;
 
   // ---------- mermaid ----------
+  // 统一风格：theme 内建 dark/default 差异大（黑白 vs 彩色），改用 'base' +
+  // themeVariables 自定义 mono 配色（深浅各一套但强调色一致，避免“有的黑白有的彩色”）
+  function mermaidThemeVars() {
+    var dark = currentCodeTheme() === 'dark';
+    return {
+      dark: dark,
+      background: dark ? '#1B1B1B' : '#FFFFFF',
+      primaryColor: dark ? '#2B2520' : '#F5F5F5',
+      primaryTextColor: dark ? '#EDEDED' : '#111111',
+      primaryBorderColor: dark ? '#666666' : '#CCCCCC',
+      lineColor: dark ? '#888888' : '#999999',
+      secondaryColor: dark ? '#332C26' : '#EEEAE4',
+      tertiaryColor: dark ? '#3D3732' : '#F0EDE9',
+      fontFamily: '"LXGW WenKai GB", sans-serif'
+    };
+  }
+
   function initMermaid() {
     var hasMermaid = document.querySelector('pre.mermaid');
     if (!hasMermaid) return;
 
     function render() {
       if (typeof mermaid === 'undefined') return;
-      mermaid.initialize({ startOnLoad: false, theme: currentCodeTheme(), securityLevel: 'loose', fontFamily: '"LXGW WenKai GB", sans-serif' });
+      // 重绘：恢复原始源码（首次渲染时存入 dataset），清掉旧 SVG 与
+      // mermaid 的 data-processed 标记（有标记会跳过 run），再渲染
+      document.querySelectorAll('pre.mermaid').forEach(function (pre) {
+        var src = pre.getAttribute('data-mermaid-src');
+        if (src == null) {
+          src = pre.textContent;
+          pre.setAttribute('data-mermaid-src', src);
+        }
+        pre.removeAttribute('data-processed');
+        pre.innerHTML = '';
+        pre.textContent = src;
+      });
+      mermaid.initialize({
+        startOnLoad: false,
+        theme: 'base',
+        themeVariables: mermaidThemeVars(),
+        securityLevel: 'loose',
+        fontFamily: '"LXGW WenKai GB", sans-serif'
+      });
       mermaid.run({ querySelector: 'pre.mermaid' }).catch(function (e) { console.warn('mermaid render failed:', e); });
     }
 
-    if (mermaidLoaded) { render(); return; }
+    function ensureRender() {
+      render();
+      // 主题切换：重绘一遍（与 echarts 一致），保证深浅模式配色统一
+      if (!initMermaid.watching) {
+        initMermaid.watching = true;
+        new MutationObserver(function () {
+          // 有 SVG 的说明已渲染过 → 重绘换主题
+          if (document.querySelector('pre.mermaid svg')) render();
+        }).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      }
+    }
+
+    if (mermaidLoaded) { ensureRender(); return; }
     mermaidLoaded = true;
-    loadScript(MERMAID_CDN, function () { render(); });
+    loadScript(MERMAID_CDN, ensureRender);
   }
 
   // ---------- echarts ----------

@@ -85,6 +85,19 @@
     }
   }
 
+  // ---------- click icon spin（首页图标 + 顶部菜单按钮，移动端无 hover 用点击触发） ----------
+  (function () {
+    var els = document.querySelectorAll('.about-icon, .nav-toggle');
+    els.forEach(function (el) {
+      el.addEventListener('click', function () {
+        var svg = el.querySelector('morph-icon > svg') || el.querySelector('svg');
+        if (!svg || svg.classList.contains('icon-spin')) return;
+        svg.classList.add('icon-spin');
+        svg.addEventListener('animationend', function () { svg.classList.remove('icon-spin'); }, { once: true });
+      });
+    });
+  })();
+
   // ---------- mobile nav ----------
   (function () {
     var toggle = document.querySelector('.nav-toggle');
