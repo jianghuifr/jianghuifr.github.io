@@ -125,7 +125,3 @@ flowchart TD
 - 用 Counter 记当前在线数：只会增，反映不了下线，语义错乱。
 - 对 Gauge 用 `rate`/`increase`：无意义甚至负数。
 - 抓取间隔 5m 却查 `rate(...[1m])`：样本不足，完全没数据。
-
----
-
-> 本文基于与 DeepSeek 的一次对话整理，原始对话：https://chat.deepseek.com/share/uc146n82x33u9sf3e3
