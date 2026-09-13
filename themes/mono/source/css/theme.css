@@ -484,6 +484,7 @@ figure.highlight .gutter {
 }
 figure.highlight .gutter pre {
   padding: 0.9rem 0.7rem;
+  overflow: hidden;
 }
 figure.highlight .code pre {
   padding: 0.9rem 1rem;
