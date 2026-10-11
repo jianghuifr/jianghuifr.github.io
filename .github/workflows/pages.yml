@@ -1,0 +1,55 @@
+name: Pages
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+# 同一时间只跑一个 Pages 部署：amend + 强推时避免两次部署互相打架
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    # permalink 的 :year/:month/:day 跟构建进程时区走（_config.yml 的 timezone 只管显示日期），
+    # runner 默认 UTC，会让时间早于 08:00 (+08:00) 的文章在 URL 上前移一天 —— 这里钉死站点时区
+    env:
+      TZ: Asia/Shanghai
+    steps:
+      - uses: actions/checkout@v4
+      # 用仓库里那份 pnpm-lock.yaml 装依赖（本地也是 pnpm），构建可复现。
+      # 版本号要和本机 `pnpm -v` 保持一致，改 package.json 依赖后记得刷新锁文件。
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 12.10.1
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'pnpm'
+      # hexo-util 的 postinstall（build:highlight）在 CI 里不需要，
+      # pnpm 会因“忽略了构建脚本”而失败，显式关掉这套严格检查
+      - name: Install Dependencies
+        run: pnpm install --frozen-lockfile --config.strict-dep-builds=false
+      - name: Build
+        run: pnpm run build
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: ./public
+  deploy:
+    needs: build
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

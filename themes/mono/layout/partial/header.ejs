@@ -1,0 +1,29 @@
+<header class="site-header">
+  <div class="header-inner">
+    <a class="site-title" href="<%- url_for('/') %>"><%= config.title %></a>
+    <button class="nav-toggle" aria-label="打开导航" aria-expanded="false">
+      <morph-icon id="mi-nav" size="20" stroke-width="2" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 6h16M4 12h16M4 18h16" style="width:20px;height:20px"/>
+        </svg>
+      </morph-icon>
+    </button>
+    <nav class="site-nav" id="site-nav">
+      <% for (var name in theme.menu) { var item = theme.menu[name]; %>
+        <a class="nav-link" href="<%- url_for(item.url || item) %>" data-scope="<%= item.scope || (item.url ? '' : 'site') %>"><%= name %></a>
+      <% } %>
+      <button class="icon-btn search-toggle" type="button" aria-label="搜索" title="搜索 (Ctrl/Cmd+K)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+      </button>
+      <button class="icon-btn theme-toggle" type="button" aria-label="切换主题" title="切换主题">
+        <morph-icon id="mi-theme" size="18" stroke-width="2" aria-hidden="true">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" style="width:18px;height:18px"/>
+          </svg>
+        </morph-icon>
+      </button>
+    </nav>
+  </div>
+</header>
