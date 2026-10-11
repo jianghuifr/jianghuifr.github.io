@@ -1,0 +1,105 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <%
+  // 页面级 title：文章/页面用 front matter；列表、标签、分类页没有 page.title，
+  // 由生成器的数据（page.tag / page.category 是字符串，page.archive + page.current）派生
+  var pageTitle = page.title;
+  if (!pageTitle && page.tag) {
+    pageTitle = '标签：' + page.tag;
+    if (page.current > 1) pageTitle += ' · 第 ' + page.current + ' 页';
+  }
+  if (!pageTitle && page.category) {
+    pageTitle = '分类：' + page.category;
+    if (page.current > 1) pageTitle += ' · 第 ' + page.current + ' 页';
+  }
+  if (!pageTitle && page.archive) {
+    pageTitle = (page.current > 1) ? '博客 · 第 ' + page.current + ' 页' : '博客';
+  }
+
+  // 标签/分类的总篇数要从 site 里的实体查（page.posts 只是当前分页）
+  function totalPosts(list, name) {
+    if (!list || !name || !list.findOne) return 0;
+    var item = list.findOne({ name: name });
+    return item ? item.posts.length : 0;
+  }
+
+  // description：优先 front matter；标签/分类/列表页按页面数据生成；
+  // 正文摘要剔除 style/script/代码块，太短（相册页只剩灯箱符号）则回退站点描述
+  var description = page.description;
+  if (!description && page.tag) description = '标签「' + page.tag + '」下的 ' + totalPosts(site.tags, page.tag) + ' 篇文章';
+  if (!description && page.category) description = '分类「' + page.category + '」下的 ' + totalPosts(site.categories, page.category) + ' 篇文章';
+  if (!description && page.archive) description = page.current > 1 ? '博客文章列表第 ' + page.current + ' 页' : '博客文章列表：按发布时间倒序排列的技术笔记';
+  if (!description && page.content) {
+    var autoDesc = strip_html(page.content
+      .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+      .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+      .replace(/<figure class="highlight[\s\S]*?<\/figure>/g, ' ')
+      .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+      .replace(/<table[\s\S]*?<\/table>/g, ' '))
+      .replace(/\s+/g, ' ').trim();
+    if (autoDesc.length >= 20) description = autoDesc.slice(0, 140);
+  }
+  if (!description) description = config.description || '';
+  var ogImage = full_url_for('/images/og-default.png');
+  var hasContentImage = !!(page.content && page.content.indexOf('<img') >= 0);
+  %>
+  <title><%= pageTitle ? pageTitle + ' | ' : '' %><%= config.title %></title>
+  <%- open_graph({
+    title: pageTitle || config.title,
+    description: description,
+    twitter_card: 'summary_large_image',
+    image: (page.layout === 'post' && hasContentImage) ? undefined : ogImage
+  }) %>
+  <link rel="canonical" href="<%- full_url_for(page.path) %>">
+  <link rel="alternate" type="application/atom+xml" title="<%= config.title %>" href="<%- full_url_for('/atom.xml') %>">
+  <% if (page.layout === 'post') {
+    var canonicalUrl = full_url_for(page.path);
+    var ld = {
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'BlogPosting',
+          headline: page.title,
+          datePublished: page.date.toISOString(),
+          dateModified: (page.updated || page.date).toISOString(),
+          inLanguage: config.language || 'zh-CN',
+          author: { '@type': 'Person', name: config.author || config.title },
+          image: full_url_for('/images/og-default.png'),
+          mainEntityOfPage: canonicalUrl
+        },
+        {
+          '@type': 'BreadcrumbList',
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: '首页', item: full_url_for('/') },
+            { '@type': 'ListItem', position: 2, name: '博客', item: full_url_for('/blog/') },
+            { '@type': 'ListItem', position: 3, name: page.title, item: canonicalUrl }
+          ]
+        }
+      ]
+    };
+  %>
+  <script type="application/ld+json"><%- JSON.stringify(ld).replace(/</g, '\\u003c') %></script>
+  <% } %>
+  <% if (String(page.path).replace(/^\/+/, '') === '404.html') { %><meta name="robots" content="noindex"><% } %>
+  <link rel="icon" href="<%- url_for('/images/logo.svg') %>">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <%# LXGW 的 medium 那份 CSS 声明的是 "LXGW WenKai GB Medium" 家族，全站没有任何规则用它
+      （228 条 @font-face / 65KB 纯白下），已移除；regular 改非阻塞，避免 jsdelivr 不可达时卡住首屏 %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css"></noscript>
+
+  <link rel="stylesheet" href="<%- url_for('/css/theme.css?v=30') %>">
+  <%# 手动 link：url_for 正确处理 query，避免 helper 拼错 %>
+  <%# Inline to avoid FOUC. Storage key kept in sync with source/js/app.js %>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('mono-theme');
+        if (saved === 'dark' || saved === 'light') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>

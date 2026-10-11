@@ -1,0 +1,16 @@
+<%
+var catEntity = site.categories.findOne({ name: page.category });
+var catTotal = catEntity ? catEntity.posts.length : page.posts.length;
+%>
+<div class="category-page">
+  <header class="list-header">
+    <h1>分类：<%= page.category %></h1>
+    <p class="list-meta"><%= catTotal %> 篇文章</p>
+  </header>
+  <div class="post-list">
+    <% page.posts.each(function(post){ %>
+      <%- partial('partial/post-card', {post: post}) %>
+    <% }) %>
+  </div>
+</div>
+<%- partial('partial/pagination') %>

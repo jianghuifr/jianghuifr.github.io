@@ -1,0 +1,12 @@
+<% if (page.total > 1) { %>
+<%# 用 Hexo 内置 paginator：它按 config.pagination_dir 生成 base + 'page/%d/'，
+    手写 base + i 会漏掉 page/ 段（曾导致 /blog/2/ 全部 404）。 %>
+<nav class="pagination" aria-label="分页">
+  <%- paginator({
+    prev_text: '« 上一页',
+    next_text: '下一页 »',
+    prev_class: 'prev',
+    next_class: 'next'
+  }) %>
+</nav>
+<% } %>

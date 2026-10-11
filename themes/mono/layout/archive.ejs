@@ -1,0 +1,10 @@
+<%# /blog/ 博客文章列表（archive generator 产物，复用卡片流） %>
+<header class="list-header">
+  <h1><%= (page.current > 1) ? '博客 · 第 ' + page.current + ' 页' : '博客' %></h1>
+</header>
+<div class="post-list">
+  <% page.posts.each(function(post){ %>
+    <%- partial('partial/post-card', {post: post}) %>
+  <% }) %>
+</div>
+<%- partial('partial/pagination') %>

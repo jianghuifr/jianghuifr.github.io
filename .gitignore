@@ -1,0 +1,11 @@
+node_modules/
+
+public/
+
+db.json
+
+# DeepSeek raw conversation drafts (regeneratable from share URL)
+source/_drafts/
+
+# 本地私有资料：内部流程文档 / 辅助脚本，只留在本机，不进公开仓库
+.local/

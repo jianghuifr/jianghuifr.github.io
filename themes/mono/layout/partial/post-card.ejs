@@ -1,0 +1,38 @@
+<article class="post-card">
+  <%# 卡片摘要：剔除代码块/表格/样式，避免把「一、基线 项目 值 系统…」这种表格文本当摘要 %>
+<%
+var cardText = strip_html(post.content
+  .replace(/<style[\s\S]*?<\/style>/gi, ' ')
+  .replace(/<script[\s\S]*?<\/script>/gi, ' ')
+  .replace(/<figure class="highlight[\s\S]*?<\/figure>/g, ' ')
+  .replace(/<pre[\s\S]*?<\/pre>/g, ' ')
+  .replace(/<table[\s\S]*?<\/table>/g, ' '))
+  .replace(/\s+/g, ' ').trim();
+%>
+  <h2 class="post-card-title">
+    <a href="<%- url_for(post.path) %>"><%= post.title || '(Untitled)' %></a>
+  </h2>
+  <div class="post-card-meta">
+    <time datetime="<%- date_xml(post.date) %>"><%- date(post.date, 'YYYY-MM-DD') %></time>
+    <% if (post.categories && post.categories.length) { %>
+      <span class="separator">&middot;</span>
+      <% post.categories.each(function(cat){ %>
+        <a class="meta-link" href="<%- url_for(cat.path) %>"><%= cat.name %></a>
+      <% }) %>
+    <% } %>
+  </div>
+  <div class="post-card-excerpt">
+    <% if (post.excerpt) { %>
+      <%- post.excerpt %>
+    <% } else { %>
+      <p><%- cardText.substring(0, 160) %>…</p>
+    <% } %>
+  </div>
+  <% if (post.tags && post.tags.length) { %>
+    <div class="post-card-tags">
+      <% post.tags.each(function(tag){ %>
+        <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+      <% }) %>
+    </div>
+  <% } %>
+</article>

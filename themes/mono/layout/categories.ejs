@@ -1,0 +1,13 @@
+<div class="categories-page">
+  <header class="list-header">
+    <h1>分类</h1>
+  </header>
+  <div class="category-list">
+    <% site.categories.sort('name').each(function(cat){ %>
+      <a class="category-list-item" href="<%- url_for(cat.path) %>">
+        <span class="category-list-name"><%= cat.name %></span>
+        <span class="category-list-count"><%= cat.posts.length %></span>
+      </a>
+    <% }) %>
+  </div>
+</div>

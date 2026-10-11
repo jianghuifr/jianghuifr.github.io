@@ -1,0 +1,52 @@
+# Mono Theme Configuration — 黑白灰轻量主题
+
+# Navigation menu
+# scope: site=个人站全局 | blog=博客区 | album=相册区
+# 页面按 URL 归属显示对应 scope 的链接；回首页点 logo（jianghuifr）
+menu:
+  首页:
+    url: /
+    scope: site
+  博客:
+    url: /blog/
+    scope: blog
+  分类:
+    url: /blog/categories/
+    scope: blog
+  标签:
+    url: /blog/tags/
+    scope: blog
+  相册:
+    url: /album/
+    scope: album
+
+# Table of Contents (right sidebar on post pages)
+toc:
+  enable: true
+  max_depth: 3
+  min_depth: 2
+  list_number: false
+
+# Waline comment
+waline:
+  enable: false
+  serverURL: 'https://your-server-url'
+
+# Giscus comment (GitHub Discussions)
+giscus:
+  enable: false
+  repo: 'user/repo'
+  repo_id: ''
+  category: 'Announcements'
+  category_id: ''
+  mapping: 'pathname'
+  strict: '0'
+  reactions_enabled: '1'
+  emit_metadata: '0'
+  input_position: 'bottom'
+  lang: 'zh-CN'
+  theme_light: 'light'
+  theme_dark: 'dark'
+
+# Footer
+copyright: ""
