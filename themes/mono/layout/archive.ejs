@@ -1,0 +1,7 @@
+<%# /blog/ 博客文章列表（archive generator 产物，复用卡片流） %>
+<div class="post-list">
+  <% page.posts.each(function(post){ %>
+    <%- partial('partial/post-card', {post: post}) %>
+  <% }) %>
+</div>
+<%- partial('partial/pagination') %>

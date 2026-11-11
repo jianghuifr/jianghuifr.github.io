@@ -1,0 +1,38 @@
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
+  <title><%= page.title ? page.title + ' | ' : '' %><%= config.title %></title>
+  <%
+  // og/meta description：优先 front matter；否则从正文里剔除代码块再截断。
+  // 直接让 open_graph() 自己回退的话，会把 fence 里的 JSON/代码当成摘要（已有先例）
+  var ogDesc = page.description;
+  if (!ogDesc && page.content) {
+    ogDesc = strip_html(page.content
+      .replace(/<figure class="highlight[\s\S]*?<\/figure>/g, ' ')
+      .replace(/<pre[\s\S]*?<\/pre>/g, ' '))
+      .replace(/\s+/g, ' ').trim().slice(0, 140);
+  }
+  %>
+  <%- open_graph(ogDesc ? { description: ogDesc } : {}) %>
+  <link rel="canonical" href="<%- full_url_for(page.path) %>">
+  <link rel="icon" href="<%- url_for('/images/logo.svg') %>">
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <%# LXGW 的 medium 那份 CSS 声明的是 "LXGW WenKai GB Medium" 家族，全站没有任何规则用它
+      （228 条 @font-face / 65KB 纯白下），已移除；regular 改非阻塞，避免 jsdelivr 不可达时卡住首屏 %>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css"></noscript>
+
+  <link rel="stylesheet" href="<%- url_for('/css/theme.css?v=27') %>">
+  <%# 手动 link：url_for 正确处理 query，避免 helper 拼错 %>
+  <%# Inline to avoid FOUC. Storage key kept in sync with source/js/app.js %>
+  <script>
+    (function () {
+      try {
+        var saved = localStorage.getItem('mono-theme');
+        if (saved === 'dark' || saved === 'light') {
+          document.documentElement.setAttribute('data-theme', saved);
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>

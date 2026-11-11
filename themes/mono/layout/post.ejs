@@ -1,0 +1,73 @@
+<%
+var tocContent = (theme.toc && theme.toc.enable) ? toc(page.content, {
+  class: 'toc',
+  list_number: theme.toc.list_number || false,
+  max_depth: theme.toc.max_depth || 3,
+  min_depth: theme.toc.min_depth || 2
+}) : '';
+
+// 字数统计：中文按字符、英文按单词；阅读速度按 350 字/分钟折算
+var plainText = strip_html(page.content);
+var cjkCount = (plainText.match(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g) || []).length;
+var latinCount = (plainText.replace(/[\u4e00-\u9fff\u3400-\u4dbf\uf900-\ufaff]/g, ' ').match(/[a-zA-Z0-9]+/g) || []).length;
+var totalWords = cjkCount + latinCount;
+var readMinutes = Math.max(1, Math.round(totalWords / 350));
+%>
+<article class="post<%= tocContent ? ' post-has-toc' : '' %>">
+  <header class="post-header">
+    <h1 class="post-title"><%= page.title %></h1>
+    <div class="post-meta">
+      <time datetime="<%- date_xml(page.date) %>"><%- date(page.date, 'YYYY-MM-DD') %></time>
+      <span class="separator">&middot;</span>
+      <span title="<%= totalWords %> 字（中文按字符、英文按单词计）">约 <%= totalWords %> 字</span>
+      <span class="separator">&middot;</span>
+      <span>约 <%= readMinutes %> 分钟</span>
+      <% if (page.categories && page.categories.length) { %>
+        <span class="separator">&middot;</span>
+        <% page.categories.each(function(cat){ %>
+          <a class="meta-link" href="<%- url_for(cat.path) %>"><%= cat.name %></a>
+        <% }) %>
+      <% } %>
+    </div>
+  </header>
+
+  <div class="post-body-wrapper">
+    <div class="post-content">
+      <%- page.content %>
+    </div>
+
+    <% if (tocContent) { %>
+      <%- partial('partial/toc', {tocContent: tocContent}) %>
+    <% } %>
+  </div>
+
+  <% if (theme.giscus && theme.giscus.enable) { %>
+    <%- partial('partial/giscus') %>
+  <% } %>
+  <% if (theme.waline && theme.waline.enable) { %>
+    <%- partial('partial/comment') %>
+  <% } %>
+
+  <footer class="post-footer">
+    <% if (page.tags && page.tags.length) { %>
+      <div class="post-tags">
+        <% page.tags.each(function(tag){ %>
+          <a href="<%- url_for(tag.path) %>">#<%= tag.name %></a>
+        <% }) %>
+      </div>
+    <% } %>
+    <nav class="post-nav">
+      <% if (page.prev) { %>
+        <a class="prev" href="<%- url_for(page.prev.path) %>">&laquo; <%= page.prev.title %></a>
+      <% } %>
+      <% if (page.next) { %>
+        <a class="next" href="<%- url_for(page.next.path) %>"><%= page.next.title %> &raquo;</a>
+      <% } %>
+    </nav>
+  </footer>
+
+  <%# 目录滚动高亮（当前章节左侧指示条）只在这类页面需要，单独一个 ~1KB 脚本 %>
+  <% if (tocContent) { %>
+    <script src="<%- url_for('/js/toc-spy.js?v=27') %>"></script>
+  <% } %>
+</article>
